@@ -22,7 +22,6 @@ Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-markdown-subscope'
 Plug 'ncm2/ncm2-path'
 Plug 'ncm2/ncm2-vim'
-Plug 'HiPhish/ncm2-vlime'
 Plug 'Shougo/neco-syntax'
 Plug 'Shougo/neco-vim'
 Plug 'neomake/neomake'
@@ -36,7 +35,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'rhysd/rust-doc.vim'
 Plug 'wellle/targets.vim'
 Plug 'ntpeters/vim-better-whitespace'
-" Plug 'qpkorr/vim-bufkill'
+Plug 'qpkorr/vim-bufkill'
 Plug 'timonv/vim-cargo'
 Plug 'alvan/vim-closetag'
 Plug 'tpope/vim-commentary'
@@ -52,7 +51,6 @@ Plug 'farmergreg/vim-lastplace'
 Plug 'plasticboy/vim-markdown'
 Plug 'xolox/vim-misc'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'junegunn/vim-peekaboo'
 Plug 'sheerun/vim-polyglot'
 Plug 'racer-rust/vim-racer'
@@ -68,7 +66,6 @@ Plug 'sodapopcan/vim-twiggy'
 Plug 'tpope/vim-unimpaired'
 Plug 'liuchengxu/vim-which-key'
 Plug 'chaoren/vim-wordmotion'
-Plug 'fukamachi/vlime', { 'rtp': 'vim/' }
 Plug 'mattn/webapi-vim'
 call plug#end()
 "}}}
@@ -109,7 +106,6 @@ set nosplitbelow
 set noswapfile
 set nowrap
 set number
-set relativenumber
 set ruler
 set scrolloff=2
 set signcolumn=auto
@@ -176,6 +172,7 @@ augroup fzf
   au!
   if has('nvim')
     au termopen * tnoremap <buffer> <esc> <c-\><c-n>
+    au termopen * startinsert
   endif
   au filetype fzf tunmap <buffer> <esc>
 augroup end
@@ -270,63 +267,28 @@ fun! LightlineFileFormat() "{{{
   return winwidth(0) > 70 ?
         \ (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
 endfun "}}}
-fun! LispReplOpen() "{{{
-  vnew
-  let g:lisp_repl_job_id = termopen(g:lisp_repl_command)
-  call timer_start(2000, {
-        \ id -> vlime#plugin#ConnectREPL('127.0.0.1', 7002) })
+fun! NimTermOpen() "{{{
+  100vnew
+  let g:nim_term_job_id = termopen("bash")
 endfun "}}}
-fun! LispReplQuickload() "{{{
-  let root = GitFindRoot()
-  let systems = split(system('find ' . root .
-        \ ' -iname *.asd -exec basename {} .asd \;'))
-  if len(systems) == 0
-    echom "Could not find any .asd files..."
-    return
-  elseif len(systems) > 1
-    echom "Found too many .asd files..."
-    return
-  endif
-  call LispReplSend("(ql:quickload :" . systems[0] . ")\n")
-endfun "}}}
-fun! LispReplSend(payload) "{{{
+fun! NimTermSend(payload) "{{{
   for line in (split(a:payload, '\n'))
-    call jobsend(g:lisp_repl_job_id, line . "\n")
+    call jobsend(g:nim_term_job_id, line . "\n")
   endfor
 endfun "}}}
 fun! RustTermOpen() "{{{
   vnew
-  let g:rust_term_job_id = termopen("zsh")
+  let g:rust_term_job_id = termopen("bash")
 endfun "}}}
 fun! RustTermSend(payload) "{{{
   for line in (split(a:payload, '\n'))
     call jobsend(g:rust_term_job_id, line . "\n")
   endfor
 endfun "}}}
-fun! VlimeBuildServerCommandFor_ros(vlime_loader, vlime_eval) "{{{
-  return ["ros", "-L", "sbcl", "run", "--load", a:vlime_loader, "--eval",
-        \ a:vlime_eval]
-endfun "}}}
-fun! VlimeCleanWindows() "{{{
-  call vlime#plugin#CloseWindow("arglist")
-  call vlime#plugin#CloseWindow("notes")
-  call vlime#plugin#CloseWindow("preview")
-  call vlime#plugin#CloseWindow("repl")
-  call vlime#plugin#CloseWindow("threads")
-  call vlime#plugin#CloseWindow("xref")
-  wincmd =
-endfun "}}}
-fun! VlimeMapKeys() "{{{
-  nnoremap <silent> <buffer> <c-]>
-        \ :call vlime#plugin#FindDefinition(vlime#ui#CurAtom())<cr>
-  nnoremap <silent> <buffer> - :call VlimeCleanWindows()<cr>
-endfun "}}}
 "}}}
 
 " File types {{{
 " Common Lisp {{{
-let g:lisp_repl_command = "rlwrap -p'1;31' ros -L sbcl run -e
-      \ '(load \"~/.vim/plugged/vlime/lisp/start-vlime.lisp\")'"
 augroup ft_commonlisp
   au!
   au bufread,bufnewfile *.asd,*.ros setfiletype lisp
@@ -381,6 +343,9 @@ augroup ft_nim
         \               candidates -> asyncomplete#complete(opt['name'], ctx,
         \               start, candidates)})}
         \ })
+  au filetype nim nnoremap <buffer> <localleader>; :call NimTermOpen()<cr>
+  au filetype nim nnoremap <buffer> <localleader>b
+        \ :call NimTermSend("nim c -r " . expand('%:p'))<cr>
 augroup end
 "}}}
 " Rust {{{
@@ -429,6 +394,9 @@ let g:ale_completion_enabled = 1
 let g:ale_open_list = 1
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {'nim': ['nimpretty']}
+"}}}
+" bufkill {{{
+let g:BufKillCreateMappings = 0
 "}}}
 " ctrlsf {{{
 let g:ctrlsf_default_root = 'project'
@@ -596,50 +564,9 @@ let g:signify_realtime = 0
 " vim-twiggy {{{
 let g:twiggy_split_method = 'leftabove'
 "}}}
-" vlime {{{
-" let g:vlime_leader = '\'
-let g:vlime_cl_use_terminal = v:true
-let g:vlime_enable_autodoc = v:true
-let g:vlime_cl_impl = "ros"
-let g:vlime_window_settings = {
-      \ "sldb": { "pos": "belowright", "vertical": v:false },
-      \ "xref": { "pos": "belowright", "size": 5, "vertical": v:false },
-      \ "repl": { "pos": "belowright", "size": 10, "vertical": v:false },
-      \ "inspector": { "pos": "belowright", "vertical": v:false },
-      \ "arglist": { "pos": "botright", "size": 1, "vertical": v:false }
-      \ }
-
-augroup custom_vlime
-  au!
-  au filetype lisp,vlime_repl,vlime_inspector,vlime_sldb,vlime_notes,
-        \vlime_xref,vlime_preview call VlimeMapKeys()
-  au filetype lisp setlocal indentexpr=vlime#plugin#CalcCurIndent()
-  au filetype lisp nnoremap <buffer> <localleader>rr :call LispReplOpen()<cr>
-  au filetype lisp nnoremap <buffer> <localleader>q
-        \ :call LispReplQuickload()<cr>
-  au filetype vlime_repl setlocal nowrap winfixheight
-  au filetype vlime_repl nnoremap <buffer> i
-        \ :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
-  au filetype vlime_repl nnoremap <buffer> <2-leftmouse>
-        \ :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
-  au filetype vlime_sldb setlocal nowrap
-  au filetype vlime_sldb nnoremap <buffer> <cr>
-        \ :call vlime#ui#sldb#ChooseCurRestart()<cr>
-  au filetype vlime_inspector nnoremap <buffer> <2-leftmouse>
-        \ :call vlime#ui#inspector#InspectorSelect()<cr>
-  au filetype vlime_inspector nnoremap <buffer> <cr>
-        \ :call vlime#ui#inspector#InspectorSelect()<cr>
-  au filetype vlime_inspector nnoremap <buffer> p
-        \ :call vlime#ui#inspector#InspectorPop()<cr>
-  au filetype vlime_xref nnoremap <buffer> <cr>
-        \ :call vlime#ui#xref#OpenCurXref()<cr>
-  au filetype vlime_notes nnoremap <buffer> <cr>
-        \ :call vlime#ui#compiler_notes#OpenCurNote()<cr>
-augroup end
-" }}}
 "}}}
 
-" Bindin        gs {{{
+" Bindings {{{
 " Global bindings {{{
 nnoremap ; :
 inoremap <f13> <esc>
@@ -704,11 +631,13 @@ let g:leader_map.b = {
       \ 'name': '+buffer',
       \ 'b': 'switch-buffer',
       \ 'd': 'delete-buffer',
+      \ 'D': 'delete-buffer-force',
       \ '[': 'previous-buffer',
       \ ']': 'next-buffer'
       \ }
 nnoremap <leader>bb :FzfBuffer<cr>
 nnoremap <leader>bd :BD<cr>
+nnoremap <leader>bD :BD!<cr>
 nnoremap <leader>b[ :bprevious<cr>
 nnoremap <leader>b] :bnext<cr>
 "}}}
@@ -743,8 +672,6 @@ let g:leader_map.f = {
       \ 'f': 'find-file',
       \ 'h': 'home-files',
       \ 'i': 'edit-project-ideas',
-      \ 'm': 'file-manager',
-      \ 'M': 'file-manager-jump',
       \ 'p': 'project-files',
       \ 'r': 'recent-files',
       \ 'R': 'rename-file',
@@ -757,8 +684,6 @@ nnoremap <leader>fd :Delete<cr>
 nnoremap <leader>ff :FzfFiles<cr>
 nnoremap <leader>fh :FzfFiles ~<cr>
 nnoremap <leader>fi :call GitEditRootFile("ideas.md")<cr>
-nnoremap <leader>fm :NERDTreeToggle<cr>
-nnoremap <leader>fM :NERDTreeFind<cr>
 nnoremap <leader>fp :call FzfProjectFiles()<cr>
 nnoremap <leader>fr :FzfHistory<cr>
 nnoremap <leader>fR :Rename
