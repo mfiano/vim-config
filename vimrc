@@ -2,11 +2,9 @@
 set runtimepath+=~/.vim,~/.vim/after
 call plug#begin('~/.vim/plugged')
 Plug 'w0rp/ale'
-Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'othree/csscomplete.vim'
 Plug 'dyng/ctrlsf.vim'
 Plug 'Shougo/echodoc.vim'
-Plug 'raghur/fruzzy'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'mattn/gist-vim'
@@ -26,17 +24,15 @@ Plug 'Shougo/neco-syntax'
 Plug 'Shougo/neco-vim'
 Plug 'neomake/neomake'
 Plug 'Shougo/neomru.vim'
+Plug 'kassio/neoterm'
 Plug 'Shougo/neoyank.vim'
 Plug 'alaviss/nim.nvim'
 Plug 'roxma/nvim-yarp'
 Plug 'joshdick/onedark.vim'
 Plug 'tmsvg/pear-tree'
-Plug 'rust-lang/rust.vim'
-Plug 'rhysd/rust-doc.vim'
 Plug 'wellle/targets.vim'
+Plug 'moll/vim-bbye'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'qpkorr/vim-bufkill'
-Plug 'timonv/vim-cargo'
 Plug 'alvan/vim-closetag'
 Plug 'tpope/vim-commentary'
 Plug 'ryanoasis/vim-devicons'
@@ -53,10 +49,8 @@ Plug 'xolox/vim-misc'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'junegunn/vim-peekaboo'
 Plug 'sheerun/vim-polyglot'
-Plug 'racer-rust/vim-racer'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-rhubarb'
-Plug 'guns/vim-sexp'
 Plug 'kshenoy/vim-signature'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-surround'
@@ -77,6 +71,7 @@ set backup
 set backupdir=~/.cache/nvim/backup//
 set background=dark
 set backspace=indent,eol,start
+set clipboard=unnamedplus
 set cmdheight=2
 set colorcolumn=+1
 set complete+=k
@@ -190,6 +185,18 @@ augroup vim_options
   au winenter,insertleave * set cursorline
   au focuslost * :wa
 augroup end
+
+augroup completion
+  au!
+  au bufenter * call ncm2#enable_for_buffer()
+  au User Ncm2Plugin call ncm2#register_source({
+        \   'name': 'nim.nvim',
+        \   'priority': 9,
+        \   'scope': ['nim'],
+        \   'on_complete': {ctx -> nim#suggest#sug#GetAllCandidates({start,
+        \ candidates -> ncm2#complete(ctx, start, candidates)})}
+        \})
+augroup end
 "}}}
 
 " Abbreviations {{{
@@ -267,23 +274,13 @@ fun! LightlineFileFormat() "{{{
   return winwidth(0) > 70 ?
         \ (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
 endfun "}}}
-fun! NimTermOpen() "{{{
-  100vnew
-  let g:nim_term_job_id = termopen("bash")
+fun! TermNew() "{{{
+  bo 18new
+  Tnew
 endfun "}}}
-fun! NimTermSend(payload) "{{{
-  for line in (split(a:payload, '\n'))
-    call jobsend(g:nim_term_job_id, line . "\n")
-  endfor
-endfun "}}}
-fun! RustTermOpen() "{{{
-  vnew
-  let g:rust_term_job_id = termopen("bash")
-endfun "}}}
-fun! RustTermSend(payload) "{{{
-  for line in (split(a:payload, '\n'))
-    call jobsend(g:rust_term_job_id, line . "\n")
-  endfor
+fun! s:checkBackspace() abort "{{{
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
 endfun "}}}
 "}}}
 
@@ -292,7 +289,6 @@ endfun "}}}
 augroup ft_commonlisp
   au!
   au bufread,bufnewfile *.asd,*.ros setfiletype lisp
-  au filetype lisp hi link lispKey Keyword
   au filetype lisp setlocal nolisp
 augroup end
 "}}}
@@ -336,34 +332,10 @@ augroup end
 " Nim {{{
 augroup ft_nim
   au!
-  au user asyncomplete_setup call asyncomplete#register_source({
-        \ 'name': 'nim',
-        \ 'whitelist': ['nim'],
-        \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start,
-        \               candidates -> asyncomplete#complete(opt['name'], ctx,
-        \               start, candidates)})}
-        \ })
-  au filetype nim nnoremap <buffer> <localleader>; :call NimTermOpen()<cr>
+  au filetype nim nnoremap <buffer> <localleader>; :call TermNew()<cr>
   au filetype nim nnoremap <buffer> <localleader>b
-        \ :call NimTermSend("nim c -r " . expand('%:p'))<cr>
-augroup end
-"}}}
-" Rust {{{
-augroup ft_rust
-  au!
-  au filetype rust nnoremap gd <plug>(rust-def)
-  au filetype rust nnoremap gs <plug>(rust-def-split)
-  au filetype rust nnoremap K <plug>(rust-doc)
-  au filetype rust nnoremap <localleader>f :RustFmt<cr>
-  au filetype rust nnoremap <buffer> <localleader>; :call RustTermOpen()<cr>
-  au filetype rust nnoremap <buffer> <localleader>b
-        \ :call RustTermSend("cargo build")<cr>
-  au filetype rust nnoremap <buffer> <localleader>B
-        \ :call RustTermSend("cargo build --release")<cr>
-  au filetype rust nnoremap <buffer> <localleader>r
-        \ :call RustTermSend("cargo run")<cr>
-  au filetype rust nnoremap <buffer> <localleader>R
-        \ :call RustTermSend("cargo run --release")<cr>
+        \ :T nim c -r --verbosity:2 --hints:off --outdir:build %:p<cr>
+  au filetype nim setlocal foldmethod=manual
 augroup end
 "}}}
 " Shell  {{{
@@ -391,12 +363,12 @@ augroup end
 " Plugin options  {{{
 " ale {{{
 let g:ale_completion_enabled = 1
-let g:ale_open_list = 1
 let g:ale_fix_on_save = 1
-let g:ale_fixers = {'nim': ['nimpretty']}
-"}}}
-" bufkill {{{
-let g:BufKillCreateMappings = 0
+let g:ale_fixers = {
+      \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+      \ 'nim': ['nimpretty'],
+      \}
+let g:ale_open_list = 1
 "}}}
 " ctrlsf {{{
 let g:ctrlsf_default_root = 'project'
@@ -434,13 +406,7 @@ let g:gist_open_browser_after_post = 1
 let g:incsearch#auto_nohlsearch = 1
 "}}}
 " indentLine {{{
-let g:indentLine_enabled = 0
-"}}}
-" languageclient {{{
-let g:LanguageClient_autoStart = 1
-let g:LanguageClient_serverCommands = {
-      \ 'rust': ['rustup', 'run', 'nightly', 'rls']
-      \ }
+let g:indentLine_enabled = 1
 "}}}
 " lightline {{{
 let g:lightline = {
@@ -460,14 +426,14 @@ let g:lightline = {
       \ }}
 "}}}
 " ncm2 {{{
-augroup ncm2
-  au!
-  au bufenter * call ncm2#enable_for_buffer()
-augroup end
+let g:ncm2#auto_popup = 0
 "}}}
 " neomru {{{
 let g:neomru#file_mru_path = '~/.cache/nvim/neomru/file'
 let g:neomru#directory_mru_path = '~/.cache/nvim/neomru/directory'
+"}}}
+" neoterm {{{
+let g:neoterm_autoscroll = 1
 "}}}
 " neoyank {{{
 let g:neoyank#file = '~/.cache/nvim/neoyank'
@@ -484,78 +450,12 @@ let g:onedark_terminal_italics=1
 " pear-tree {{{
 let g:pear_tree_repeatable_expand = 0
 "}}}
-" rust.vim {{{
-let g:rustfmt_autosave = 1
-let g:rustfmt_command = 'rustup run nightly rustfmt'
 "}}}
 " vim-markdown {{{
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_auto_insert_bullets = 0
-"}}}
-" vim-racer {{{
-let g:racer_cmd = '~/.cargo/bin/racer'
-let g:racer_experimental_completer = 1
-"}}}
-" vim-sexp {{{
-let g:sexp_insert_after_wrap = 0
-let g:sexp_mappings = {
-  \ 'sexp_outer_list':                'af',
-  \ 'sexp_inner_list':                'if',
-  \ 'sexp_outer_top_list':            'aF',
-  \ 'sexp_inner_top_list':            'iF',
-  \ 'sexp_outer_string':              'as',
-  \ 'sexp_inner_string':              'is',
-  \ 'sexp_outer_element':             'ae',
-  \ 'sexp_inner_element':             'ie',
-  \ 'sexp_move_to_prev_bracket':      '(',
-  \ 'sexp_move_to_next_bracket':      ')',
-  \ 'sexp_move_to_prev_element_head': '',
-  \ 'sexp_move_to_next_element_head': '',
-  \ 'sexp_move_to_prev_element_tail': '',
-  \ 'sexp_move_to_next_element_tail': '',
-  \ 'sexp_flow_to_prev_close':        '',
-  \ 'sexp_flow_to_next_open':         '',
-  \ 'sexp_flow_to_prev_open':         '',
-  \ 'sexp_flow_to_next_close':        '',
-  \ 'sexp_flow_to_prev_leaf_head':    '<s-left>',
-  \ 'sexp_flow_to_next_leaf_head':    '<s-right>',
-  \ 'sexp_flow_to_prev_leaf_tail':    '',
-  \ 'sexp_flow_to_next_leaf_tail':    '',
-  \ 'sexp_move_to_prev_top_element':  '[[',
-  \ 'sexp_move_to_next_top_element':  ']]',
-  \ 'sexp_select_prev_element':       '',
-  \ 'sexp_select_next_element':       '',
-  \ 'sexp_indent':                    '==',
-  \ 'sexp_indent_top':                '=-',
-  \ 'sexp_round_head_wrap_list':      '',
-  \ 'sexp_round_tail_wrap_list':      '',
-  \ 'sexp_square_head_wrap_list':     '',
-  \ 'sexp_square_tail_wrap_list':     '',
-  \ 'sexp_curly_head_wrap_list':      '',
-  \ 'sexp_curly_tail_wrap_list':      '',
-  \ 'sexp_round_head_wrap_element':   '',
-  \ 'sexp_round_tail_wrap_element':   '',
-  \ 'sexp_square_head_wrap_element':  '',
-  \ 'sexp_square_tail_wrap_element':  '',
-  \ 'sexp_curly_head_wrap_element':   '',
-  \ 'sexp_curly_tail_wrap_element':   '',
-  \ 'sexp_insert_at_list_head':       '<localleader>[',
-  \ 'sexp_insert_at_list_tail':       '<localleader>]',
-  \ 'sexp_splice_list':               '',
-  \ 'sexp_convolute':                 '',
-  \ 'sexp_raise_list':                '',
-  \ 'sexp_raise_element':             '',
-  \ 'sexp_swap_list_backward':        '<m-up>',
-  \ 'sexp_swap_list_forward':         '<m-down>',
-  \ 'sexp_swap_element_backward':     '<m-left>',
-  \ 'sexp_swap_element_forward':      '<m-right>',
-  \ 'sexp_emit_head_element':         '',
-  \ 'sexp_emit_tail_element':         '',
-  \ 'sexp_capture_prev_element':      '',
-  \ 'sexp_capture_next_element':      '',
-  \ }
 "}}}
 " vim-signify {{{
 let g:signify_vcs_list = [ 'git' ]
@@ -569,7 +469,6 @@ let g:twiggy_split_method = 'leftabove'
 " Bindings {{{
 " Global bindings {{{
 nnoremap ; :
-inoremap <f13> <esc>
 nnoremap <tab> za
 vnoremap <tab> za
 inoremap <f1> <nop>
@@ -615,8 +514,14 @@ map g# <plug>(incsearch-nohl-g#)
 map z/ <plug>(incsearch-fuzzy-/)
 map z? <plug>(incsearch-fuzzy-?)
 map zg/ <plug>(incsearch-fuzzy-stay)
-inoremap <expr> <cr> (pumvisible() ? "\<c-y>\<cr>" : "\<cr>")
-inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
+imap <silent><expr> <tab>
+      \ pumvisible() ?  "\<c-n>" :
+      \ <sid>checkBackspace() ? "\<tab>" :
+      \ "\<plug>(ncm2_manual_trigger)"
+" imap <tab> <plug>(ncm2_manual_trigger)
+" inoremap <c-c> <esc>
+" inoremap <expr> <cr> (pumvisible() ? "\<c-y>\<cr>" : "\<cr>")
+" inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 "}}}
 " Leader bindings {{{
@@ -636,25 +541,10 @@ let g:leader_map.b = {
       \ ']': 'next-buffer'
       \ }
 nnoremap <leader>bb :FzfBuffer<cr>
-nnoremap <leader>bd :BD<cr>
-nnoremap <leader>bD :BD!<cr>
+nnoremap <leader>bd :Bdelete<cr>
+nnoremap <leader>bD :Bwipeout<cr>
 nnoremap <leader>b[ :bprevious<cr>
 nnoremap <leader>b] :bnext<cr>
-"}}}
-" clipboard {{{
-let g:leader_map.c = {
-      \ 'name': '+clipboard',
-      \ 'c': 'copy-clipboard',
-      \ 'C': 'copy-primary',
-      \ 'p': 'paste-clipboard',
-      \ 'P': 'paste-primary'
-      \ }
-nnoremap <leader>cc "+y
-vnoremap <leader>cc "+y
-nnoremap <leader>cC "*y
-vnoremap <leader>cC "*y
-nnoremap <leader>cp "+p
-nnoremap <leader>cP "*p
 "}}}
 " edit {{{
 let g:leader_map.e = {
@@ -752,6 +642,7 @@ let g:leader_map.w = {
       \ 'name': '+window',
       \ '-': 'split-horizontal',
       \ '|': 'split-vertical',
+      \ '=': 'rebalance',
       \ 'd': 'window-delete',
       \ 's': 'window-swap',
       \ 't': 'tab-new',
@@ -760,6 +651,7 @@ let g:leader_map.w = {
       \ }
 nnoremap <leader>w- :split<cr>
 nnoremap <leader>w\| :vsplit<cr>
+nnoremap <leader>w= <c-w>=
 nnoremap <leader>wd :close<cr>
 nnoremap <leader>ws <c-w>R
 nnoremap <leader>wt :tab split<cr>
@@ -768,4 +660,3 @@ nnoremap <leader>ww :FzfWindows<cr>
 "}}}
 "}}}
 "}}}
-
