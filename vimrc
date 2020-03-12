@@ -477,6 +477,7 @@ nnoremap Q :q<cr>
 nnoremap - :wincmd =<cr>
 nnoremap <cr> o<esc>
 nnoremap <f9> m'ggg?G``
+nnoremap <a-t> :tab split<cr>
 nnoremap <a-1> 1gt
 nnoremap <a-2> 2gt
 nnoremap <a-3> 3gt
@@ -518,10 +519,6 @@ imap <silent><expr> <tab>
       \ pumvisible() ?  "\<c-n>" :
       \ <sid>checkBackspace() ? "\<tab>" :
       \ "\<plug>(ncm2_manual_trigger)"
-" imap <tab> <plug>(ncm2_manual_trigger)
-" inoremap <c-c> <esc>
-" inoremap <expr> <cr> (pumvisible() ? "\<c-y>\<cr>" : "\<cr>")
-" inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 "}}}
 " Leader bindings {{{
