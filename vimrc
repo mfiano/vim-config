@@ -408,14 +408,14 @@ let g:ale_fixers = {
       \ 'nim': ['nimpretty'],
       \}
 let g:ale_linters = {
-      \ 'rust': ['rls'],
+      \ 'rust': ['analyzer'],
       \}
 let g:ale_open_list = 1
 let g:ale_nim_nimpretty_options = '--maxLineLen:100'
-let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
-let g:ale_rust_rls_config = {
-      \ 'rust': { 'clippy_preference': 'on' }
-      \}
+let g:ale_hover_cursor = 0
+let g:ale_lint_on_text_changed = 'always'
+let g:ale_echo_cursor = 0
+let g:ale_hover_to_preview = 1
 "}}}
 " ctrlsf {{{
 let g:ctrlsf_default_root = 'project'
@@ -552,8 +552,6 @@ nnoremap z3 :setl foldlevel=3<cr>
 nnoremap z4 :setl foldlevel=4<cr>
 nnoremap z5 :setl foldlevel=5<cr>
 nnoremap Y y$
-nnoremap <silent> K :call LanguageClient_textDocument_hover()<cr>
-nnoremap <silent> gd :call LanguageClient_textDocument_definition()<cr>
 map / <plug>(incsearch-forward)
 map ? <plug>(incsearch-backward)
 map g/ <plug>(incsearch-stay)
@@ -597,6 +595,20 @@ nnoremap <leader>bd :Bdelete<cr>
 nnoremap <leader>bD :Bwipeout<cr>
 nnoremap <leader>b[ :bprevious<cr>
 nnoremap <leader>b] :bnext<cr>
+"}}}
+
+" code {{{
+let g:leader_map.c = {
+      \ 'name': '+code',
+      \ 'd': 'go-to-definition',
+      \ 'h': 'hover',
+      \ 'r': 'find-references',
+      \ 't': 'go-to-type-definition'
+      \ }
+nnoremap <leader>cd :ALEGoToDefinition<cr>
+nnoremap <leader>ch :ALEHover<cr>
+nnoremap <leader>cr :ALEFindReferences<cr>
+nnoremap <leader>ct :ALEGoToTypeDefinition<cr>
 "}}}
 
 " edit {{{
@@ -659,7 +671,7 @@ nnoremap <leader>gw :Gbrowse<cr>
 "}}}
 
 " search {{{
-let g:leader_map['s'] = {
+let g:leader_map.s = {
       \ 'name': '+search',
       \ ';': 'command-history',
       \ '/': 'search-history',
