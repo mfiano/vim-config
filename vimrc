@@ -2,7 +2,6 @@
 set runtimepath+=~/.vim,~/.vim/after
 call plug#begin('~/.vim/plugged')
 Plug 'w0rp/ale'
-Plug 'jiangmiao/auto-pairs'
 Plug 'othree/csscomplete.vim'
 Plug 'dyng/ctrlsf.vim'
 Plug 'Shougo/echodoc.vim'
@@ -406,12 +405,13 @@ let g:ale_completion_enabled = 1
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
       \ '*': ['remove_trailing_lines', 'trim_whitespace'],
-      \ 'nim': ['nimpretty --maxLineLen:100'],
+      \ 'nim': ['nimpretty'],
       \}
 let g:ale_linters = {
       \ 'rust': ['rls'],
       \}
 let g:ale_open_list = 1
+let g:ale_nim_nimpretty_options = '--maxLineLen:100'
 let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
 let g:ale_rust_rls_config = {
       \ 'rust': { 'clippy_preference': 'on' }
@@ -493,9 +493,6 @@ let g:netrw_browse_split = 1
 " onedark {{{
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 let g:onedark_terminal_italics=1
-"}}}
-" pear-tree {{{
-let g:pear_tree_repeatable_expand = 0
 "}}}
 " rust.vim {{{
 let g:rustfmt_autosave = 1
