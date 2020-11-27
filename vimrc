@@ -678,7 +678,6 @@ nnoremap <leader>gG :Gist -p<cr>
 vnoremap <leader>gG :Gist -p<cr>
 nnoremap <leader>gw :Gbrowse<cr>
 
-let g:leader_map['s'] = {
 let g:leader_map.s = {
       \ 'name': '+search',
       \ ';': 'command-history',
