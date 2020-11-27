@@ -1,74 +1,80 @@
 " Plugins {{{
+
 set runtimepath+=~/.vim,~/.vim/after
 call plug#begin('~/.vim/plugged')
-Plug 'w0rp/ale'
-Plug 'othree/csscomplete.vim'
-Plug 'dyng/ctrlsf.vim'
-Plug 'Shougo/echodoc.vim'
+
+" general
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'mattn/gist-vim'
-Plug 'junegunn/gv.vim'
-Plug 'othree/html5.vim'
+Plug 'liuchengxu/vim-which-key'
+Plug 'sheerun/vim-polyglot'
+Plug 'junegunn/vim-peekaboo'
+Plug 'farmergreg/vim-lastplace'
+Plug 'tpope/vim-eunuch'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'moll/vim-bbye'
+Plug 'wellle/targets.vim'
+Plug 'Shougo/neoyank.vim'
+Plug 'kassio/neoterm'
+Plug 'neomake/neomake'
+Plug 'w0rp/ale'
+Plug 'neovim/nvim-lspconfig'
+Plug 'tjdevries/lsp_extensions.nvim'
+Plug 'nvim-lua/completion-nvim'
+
+" appearance
+Plug 'joshdick/onedark.vim'
+Plug 'mhinz/vim-signify'
+Plug 'ryanoasis/vim-devicons'
+Plug 'itchyny/lightline.vim'
+Plug 'Yggdroot/indentLine'
+Plug 'preservim/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+
+" editing
+Plug 'chaoren/vim-wordmotion'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/incsearch-fuzzy.vim'
-Plug 'Yggdroot/indentLine'
-Plug 'autozimu/LanguageClient-neovim',
-      \ {'branch': 'next', 'do': 'bash install.sh'}
-Plug 'itchyny/lightline.vim'
-Plug 'ncm2/ncm2'
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-markdown-subscope'
-Plug 'ncm2/ncm2-path'
-Plug 'ncm2/ncm2-vim'
-Plug 'Shougo/neco-syntax'
-Plug 'Shougo/neco-vim'
-Plug 'neomake/neomake'
-Plug 'Shougo/neomru.vim'
-Plug 'kassio/neoterm'
-Plug 'Shougo/neoyank.vim'
-Plug 'alaviss/nim.nvim'
-Plug 'roxma/nvim-yarp'
-Plug 'joshdick/onedark.vim'
-Plug 'rust-lang/rust.vim'
-Plug 'rhysd/rust-doc.vim'
-Plug 'wellle/targets.vim'
-Plug 'moll/vim-bbye'
-Plug 'ntpeters/vim-better-whitespace'
-Plug 'timonv/vim-cargo'
-Plug 'alvan/vim-closetag'
-Plug 'tpope/vim-commentary'
-Plug 'ryanoasis/vim-devicons'
-Plug 'tpope/vim-eunuch'
-Plug 'terryma/vim-expand-region'
-Plug 'tpope/vim-fugitive'
-Plug 'rhysd/vim-gfm-syntax'
-Plug 'itchyny/vim-gitbranch'
-Plug 'roxma/vim-hug-neovim-rpc'
-Plug 'elzr/vim-json'
-Plug 'farmergreg/vim-lastplace'
-Plug 'plasticboy/vim-markdown'
-Plug 'xolox/vim-misc'
-Plug 'terryma/vim-multiple-cursors'
-Plug 'junegunn/vim-peekaboo'
-Plug 'sheerun/vim-polyglot'
-Plug 'racer-rust/vim-racer'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-rhubarb'
-Plug 'kshenoy/vim-signature'
-Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-surround'
+Plug 'kshenoy/vim-signature'
+Plug 'tpope/vim-repeat'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'tpope/vim-commentary'
+
+" git support
+Plug 'tpope/vim-fugitive'
+Plug 'itchyny/vim-gitbranch'
+Plug 'tpope/vim-rhubarb'
+Plug 'mattn/gist-vim'
+
+" type: misc text/data
+Plug 'rhysd/vim-gfm-syntax'
+Plug 'plasticboy/vim-markdown'
 Plug 'cespare/vim-toml'
 Plug 'maralla/vim-toml-enhance'
-Plug 'sodapopcan/vim-twiggy'
-Plug 'tpope/vim-unimpaired'
-Plug 'liuchengxu/vim-which-key'
-Plug 'chaoren/vim-wordmotion'
+Plug 'elzr/vim-json'
+
+" type: nim
+Plug 'alaviss/nim.nvim'
+
+" type: rust
+Plug 'timonv/vim-cargo'
+Plug 'rust-lang/rust.vim'
+Plug 'rhysd/rust-doc.vim'
+Plug 'racer-rust/vim-racer'
+
+" type: webdev
+Plug 'othree/html5.vim'
+Plug 'othree/csscomplete.vim'
 Plug 'mattn/webapi-vim'
+Plug 'alvan/vim-closetag'
+
 call plug#end()
+
 "}}}
 
 " General {{{
+
 set autochdir
 set autoindent
 set backup
@@ -117,7 +123,7 @@ set showmatch
 set showmode
 set smartcase
 set smartindent
-set softtabstop=4
+set softtabstop=2
 set spellfile=~/.vim/spell/custom.utf-8.add
 set splitright
 set synmaxcol=300
@@ -164,9 +170,11 @@ hi Search guibg='#61afef' guifg='#000000'
 
 syntax on
 colorscheme onedark
+
 "}}}
 
 " Auto commands {{{
+
 augroup fzf
   au!
   if has('nvim')
@@ -187,43 +195,36 @@ augroup vim_options
   au bufreadpost quickfix nnoremap <buffer><cr> <cr>
   au winleave,insertenter * set nocursorline
   au winenter,insertleave * set cursorline
-  au focuslost * :wa
 augroup end
 
-augroup completion
-  au!
-  au bufenter * call ncm2#enable_for_buffer()
-  au user Ncm2Plugin call ncm2#register_source({
-    \ 'name': 'nim.nvim',
-    \ 'priority': 9,
-    \ 'scope': ['nim'],
-    \ 'on_complete': {ctx -> nim#suggest#sug#GetAllCandidates({start,
-    \ candidates -> ncm2#complete(ctx, start, candidates)})}
-    \})
-augroup end
 "}}}
 
 " Abbreviations {{{
+
 iabbrev todo TODO:
 iabbrev _mail mail@michaelfiano.com
 iabbrev _sig Michael Fiano <mail@michaelfiano.com>
 iabbrev _web https://www.michaelfiano.com
 iabbrev <expr> _date strftime("%Y-%m-%d %H:%M:%S")
+
 "}}}
 
 " Functions {{{
-fun! GitFindRoot() "{{{
+
+fun! GitFindRoot()
   return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
-endfun "}}}
-fun! GitEditRootFile(file) "{{{
+endfun
+
+fun! GitEditRootFile(file)
   let git_root = GitFindRoot()
   if git_root[0] == "/"
     execute "edit " . git_root . "/" . a:file
   else
     echo "Not a Git repo."
   endif
-endfun "}}}
-fun! FzfFloatingWindow() "{{{
+endfun
+
+fun! FzfFloatingWindow()
   let buf = nvim_create_buf(v:false, v:true)
   let height = float2nr(&lines / 2)
   let width = float2nr(&columns / 2)
@@ -237,12 +238,14 @@ fun! FzfFloatingWindow() "{{{
         \ 'height': height }
   call setbufvar(buf, '&signcolumn', 'no')
   call nvim_open_win(buf, v:true, opts)
-endfun "}}}
-fun! FzfProjectFiles() "{{{
+endfun
+
+fun! FzfProjectFiles()
   let root = GitFindRoot()
   execute 'FzfGitFiles' root
-endfun "}}}
-fun! FzfProjectRg(query, fullscreen) "{{{
+endfun
+
+fun! FzfProjectRg(query, fullscreen)
   let command_fmt = 'rg --column --line-number --no-heading --color=always
         \ --smart-case %s || true'
   let initial_command = printf(command_fmt, shellescape(a:query))
@@ -253,8 +256,8 @@ fun! FzfProjectRg(query, fullscreen) "{{{
         \ a:fullscreen)
 endfun
 command! -nargs=* -bang FzfProjectRg call FzfProjectRg(<q-args>, <bang>0)
-"}}}
-fun! FzfSpell() "{{{
+
+fun! FzfSpell()
   let suggestions = spellsuggest(expand("<cword>"))
   return fzf#run({
         \ 'source': suggestions,
@@ -262,25 +265,30 @@ fun! FzfSpell() "{{{
         \ 'down': 10,
         \ 'window': 'call FzfFloatingWindow()'
         \ })
-endfun "}}}
-fun! FzfSpellSink(word) "{{{
+endfun
+
+fun! FzfSpellSink(word)
   exe 'normal! "_ciw'.a:word
-endfun "}}}
-fun! LightlineCompletion() "{{{
+endfun
+
+fun! LightlineCompletion()
   if exists("b:last_completion_sig")
     return b:last_completion_sig
   endif
-endfun "}}}
-fun! LightlineFileType() "{{{
+endfun
+
+fun! LightlineFileType()
   return winwidth(0) > 70 ?
         \ (strlen(&filetype) ? &filetype
         \ . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
-endfun "}}}
-fun! LightlineFileFormat() "{{{
+endfun
+
+fun! LightlineFileFormat()
   return winwidth(0) > 70 ?
         \ (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
-endfun "}}}
-fun! SmartHome() " {{{
+endfun
+
+fun! SmartHome()
   let first_nonblank = match(getline('.'), '\S') + 1
   if first_nonblank == 0
     return col('.') + 1 >= col('$') ? '0' : '^'
@@ -289,64 +297,68 @@ fun! SmartHome() " {{{
     return '0'
   endif
   return &wrap && wincol() > 1 ? 'g^' : '^'
-endfun "}}}
-fun! TermNew() "{{{
+endfun
+
+fun! TermNew()
   bo 12new
   Tnew
   set wfh
-endfun "}}}
-fun! s:checkBackspace() abort "{{{
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
-endfun "}}}
+endfun
+
+fun! s:check_backspace() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfun
+
 "}}}
 
 " File types {{{
-" Common Lisp {{{
+
+" Common Lisp
 augroup ft_commonlisp
   au!
   au bufread,bufnewfile *.asd,*.ros setfiletype lisp
   au filetype lisp setlocal nolisp
 augroup end
-"}}}
-" CSS {{{
+
+" CSS
 augroup ft_css
   au!
   au filetype css setlocal omnifunc=csscomplete#CompleteCSS noci
 augroup end
-"}}}
-" Diff {{{
+
+" Diff
 augroup ft_diff
   au!
   au filetype diff setlocal foldmethod=expr
   au filetype diff setlocal foldexpr=DiffFoldLevel()
 augroup end
-"}}}
-" GLSL {{{
+
+" GLSL
 augroup ft_glsl
   au!
   au filetype glsl setlocal foldmethod=marker foldmarker={,}
 augroup end
-"}}}
-" HTML {{{
+
+" HTML
 augroup ft_html
   au!
   au filetype html setlocal foldmethod=indent
 augroup end
-"}}}
-" JSON {{{
+
+" JSON
 augroup ft_json
   au!
   au filetype json setlocal foldmethod=syntax
 augroup end
-"}}}
-" Markdown {{{
+
+" Markdown
 augroup ft_markdown
   au!
   au bufnewfile,bufread *.md setlocal filetype=markdown foldlevel=1
 augroup end
-"}}}
-" Nim {{{
+
+" Nim
 augroup ft_nim
   au!
   au filetype nim nnoremap <buffer> <localleader>; :call TermNew()<cr>
@@ -358,57 +370,53 @@ augroup ft_nim
   au filetype nim nnoremap <buffer> <localleader>t :T nimble test --outdir:build %:p<cr>
   au filetype nim setlocal foldmethod=indent fdn=1 formatoptions-=ro tw=100
 augroup end
-"}}}
-" Rust {{{
+
+" Rust
 augroup ft_rust
   au!
-  au filetype rust nnoremap gd <plug>(rust-def)
-  au filetype rust nnoremap gs <plug>(rust-def-split)
-  au filetype rust nnoremap K <plug>(rust-doc)
   au filetype rust nnoremap <localleader>f :RustFmt<cr>
   au filetype rust nnoremap <buffer> <localleader>; :call TermNew()<cr>
   au filetype rust nnoremap <buffer> <localleader>b
         \ :T cargo build<cr>
   au filetype rust nnoremap <buffer> <localleader>B
         \ :T cargo build --release<cr>
+  au filetype rust nnoremap <buffer> <localleader>c
+        \ :T cargo check<cr>
   au filetype rust nnoremap <buffer> <localleader>r
         \ :T cargo run<cr>
   au filetype rust nnoremap <buffer> <localleader>R
         \ :T cargo run --release<cr>
-"}}}
-" Shell  {{{
+
+" Shell
 augroup ft_shell
   au!
   au filetype sh setlocal foldmethod=marker
 augroup end
-"}}}
-" VimL  {{{
+
+" VimL
 augroup ft_vim
   au!
   au filetype vim setlocal foldmethod=marker spell
   au filetype vim setlocal fo-=o fo-=r
   au filetype vim nnoremap <buffer> <localleader>s :source $MYVIMRC<cr>
 augroup end
-"}}}
-" YAML {{{
 
+" YAML
 augroup ft_yaml
   au!
   au filetype yaml setlocal indentkeys=<:>
 augroup end
-"}}}
+
 "}}}
 
 " Plugin options  {{{
-" ale {{{
+
+" ale
 let g:ale_completion_enabled = 1
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
       \ '*': ['remove_trailing_lines', 'trim_whitespace'],
       \ 'nim': ['nimpretty'],
-      \}
-let g:ale_linters = {
-      \ 'rust': ['rls'],
       \}
 let g:ale_open_list = 1
 let g:ale_nim_nimpretty_options = '--maxLineLen:100'
@@ -416,16 +424,19 @@ let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
 let g:ale_rust_rls_config = {
       \ 'rust': { 'clippy_preference': 'on' }
       \}
-"}}}
-" ctrlsf {{{
-let g:ctrlsf_default_root = 'project'
-let g:ctrlsf_position = 'left'
-let g:ctrlsf_auto_focus = { "at": "start" }
-"}}}
-" echodoc {{{
+
+" diagnostic-nvim
+let g:diagnostic_enable_virtual_text = 1
+let g:diagnostic_trimmed_virtual_text = '40'
+let g:diagnostic_insert_delay = 1
+au CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()
+au CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
+\ lua require'lsp_extensions'.inlay_hints{ prefix = '', highlight = "Comment" }
+
+" echodoc
 let g:echodoc#enable_at_startup = 1
-"}}}
-" fzf {{{
+
+" fzf
 let g:fzf_command_prefix = 'Fzf'
 let g:fzf_layout = { 'window': 'call FzfFloatingWindow()' }
 let g:fzf_colors = {
@@ -442,20 +453,20 @@ let g:fzf_colors = {
       \ 'spinner': ['fg', 'Label'],
       \ 'header': ['fg', 'Comment'] }
 let g:fzf_buffers_jump = 1
-"}}}
-" gist-vim   {{{
+
+" gist-vim
 let g:gist_clip_command = 'xclip -selection primary'
 let g:gist_detect_filetype = 1
 let g:gist_post_private = 1
 let g:gist_open_browser_after_post = 1
-"}}}
-" incsearch {{{
+
+" incsearch
 let g:incsearch#auto_nohlsearch = 1
-"}}}
-" indentLine {{{
+
+" indentLine
 let g:indentLine_enabled = 1
-"}}}
-" lightline {{{
+
+" lightline
 let g:lightline = {
       \ 'colorscheme': 'onedark',
       \ 'active': {
@@ -471,54 +482,49 @@ let g:lightline = {
       \   'gitbranch': 'gitbranch#name',
       \   'lastcompletion': 'LightlineCompletion'
       \ }}
-  "}}}
-" ncm2 {{{
-let g:ncm2#auto_popup = 0
-"}}}
-" neomru {{{
-let g:neomru#file_mru_path = '~/.cache/nvim/neomru/file'
-let g:neomru#directory_mru_path = '~/.cache/nvim/neomru/directory'
-"}}}
-" neoterm {{{
+
+" neoterm
 let g:neoterm_autoscroll = 1
-"}}}
-" neoyank {{{
+
+" neoyank
 let g:neoyank#file = '~/.cache/nvim/neoyank'
-"}}}
-" netrw {{{
+
+" netrw
 let g:netrw_dirhistmax = 0
 let g:netrw_banner = 0
 let g:netrw_browse_split = 1
-"}}}
-" onedark {{{
+
+" nvim-lspconfig
+lua require'lspconfig'.rust_analyzer.setup{}
+
+" onedark
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 let g:onedark_terminal_italics=1
-"}}}
-" rust.vim {{{
+
+" rust.vim
 let g:rustfmt_autosave = 1
 let g:rustfmt_command = 'rustup run nightly rustfmt'
-"}}}
-" vim-markdown {{{
+
+" vim-markdown
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_auto_insert_bullets = 0
-"}}}
-" vim-racer {{{
+
+" vim-racer
 let g:racer_cmd = '~/.cargo/bin/racer'
 let g:racer_experimental_completer = 1
-"}}}
-" vim-signify {{{
+
+" vim-signify
 let g:signify_vcs_list = [ 'git' ]
 let g:signify_realtime = 0
-"}}}
-" vim-twiggy {{{
-let g:twiggy_split_method = 'leftabove'
-"}}}
+
 "}}}
 
 " Bindings {{{
-" Global bindings {{{
+
+" Global bindings
+
 nnoremap ; :
 nnoremap <tab> za
 vnoremap <tab> za
@@ -552,8 +558,6 @@ nnoremap z3 :setl foldlevel=3<cr>
 nnoremap z4 :setl foldlevel=4<cr>
 nnoremap z5 :setl foldlevel=5<cr>
 nnoremap Y y$
-nnoremap <silent> K :call LanguageClient_textDocument_hover()<cr>
-nnoremap <silent> gd :call LanguageClient_textDocument_definition()<cr>
 map / <plug>(incsearch-forward)
 map ? <plug>(incsearch-backward)
 map g/ <plug>(incsearch-stay)
@@ -568,13 +572,27 @@ map z? <plug>(incsearch-fuzzy-?)
 map zg/ <plug>(incsearch-fuzzy-stay)
 noremap <expr> <silent> <home> SmartHome()
 imap <silent> <home> <c-o><home>
-imap <silent><expr> <tab>
-      \ pumvisible() ? "\<c-n>" :
-      \ <sid>checkBackspace() ? "\<tab>" :
-      \ "\<plug>(ncm2_manual_trigger)"
+inoremap <silent><expr> <tab>
+  \ pumvisible() ? "\<c-n>" :
+  \ <sid>check_backspace() ? "\<tab>" :
+  \ completion#trigger_completion()
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-"}}}
-" Leader bindings {{{
+
+" LSP
+nnoremap <silent> ga <cmd>lua vim.lsp.buf.code_action()<cr>
+nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<cr>
+nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<cr>
+nnoremap <silent> gD <cmd>lua vim.lsp.buf.implementation()<cr>
+nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<cr>
+nnoremap <silent> 1gD <cmd>lua vim.lsp.buf.type_definition()<cr>
+nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<cr>
+nnoremap <silent> g0 <cmd>lua vim.lsp.buf.document_symbol()<cr>
+nnoremap <silent> gW <cmd>lua vim.lsp.buf.workspace_symbol()<cr>
+nnoremap <silent> gd <cmd>lua vim.lsp.buf.declaration()<cr>
+nnoremap <silent> g[ <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
+nnoremap <silent> g] <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
+
+" Leader bindings
 
 let g:leader_map = {}
 call which_key#register('<space>', "g:leader_map")
@@ -583,23 +601,18 @@ vnoremap <silent> <leader> :<c-u>WhichKey '<space>'<cr>
 nnoremap <silent> <localleader> :WhichKey ','<cr>
 vnoremap <silent> <localleader> :<c-u>WhichKey ','<cr>
 
-" buffer {{{
 let g:leader_map.b = {
       \ 'name': '+buffer',
       \ 'b': 'switch-buffer',
       \ 'd': 'delete-buffer',
-      \ 'D': 'delete-buffer-force',
       \ '[': 'previous-buffer',
       \ ']': 'next-buffer'
       \ }
 nnoremap <leader>bb :FzfBuffer<cr>
-nnoremap <leader>bd :Bdelete<cr>
-nnoremap <leader>bD :Bwipeout<cr>
+nnoremap <leader>bd :Bwipeout<cr>
 nnoremap <leader>b[ :bprevious<cr>
 nnoremap <leader>b] :bnext<cr>
-"}}}
 
-" edit {{{
 let g:leader_map.e = {
       \ 'name': '+edit',
       \ ';': 'insert-semi-colon',
@@ -607,9 +620,7 @@ let g:leader_map.e = {
       \ }
 nnoremap <leader>e; m'A;<esc>``
 nnoremap <leader>em :CtrlSF<cr>
-"}}}
 
-" file {{{
 let g:leader_map.f = {
       \ 'name': '+file',
       \ 'd': 'delete-file',
@@ -621,6 +632,7 @@ let g:leader_map.f = {
       \ 'R': 'rename-file',
       \ 's': 'save-file',
       \ 'S': 'sudo-save-file',
+      \ 't': 'file-tree',
       \ 'v': 'edit-vimrc',
       \ 'V': 'edit-vimrc-split'
       \ }
@@ -631,16 +643,14 @@ nnoremap <leader>fi :call GitEditRootFile("ideas.md")<cr>
 nnoremap <leader>fp :call FzfProjectFiles()<cr>
 nnoremap <leader>fr :FzfHistory<cr>
 nnoremap <leader>fR :Rename
-nnoremap <leader>fs :w<cr>
+nnoremap <leader>fs :w!<cr>
 nnoremap <leader>fS :SudoWrite<cr>
+nnoremap <leader>ft :NERDTreeToggle<cr>
 nnoremap <leader>fv :e $MYVIMRC<cr>
 nnoremap <leader>fV :vsplit $MYVIMRC<cr>
-"}}}
 
-" git {{{
 let g:leader_map.g = {
       \ 'name': '+git',
-      \ 'b': 'branches',
       \ 'c': 'commits',
       \ 'C': 'buffer-commits',
       \ 'g': 'gist',
@@ -648,7 +658,6 @@ let g:leader_map.g = {
       \ 's': 'git-status',
       \ 'w': 'git-web-browse'
       \ }
-nnoremap <leader>gb :Twiggy<cr>
 nnoremap <leader>gc :FzfCommits<cr>
 nnoremap <leader>gC :FzfBCommits<cr>
 nnoremap <leader>gg :Gist -P<cr>
@@ -656,9 +665,7 @@ vnoremap <leader>gg :Gist -P<cr>
 nnoremap <leader>gG :Gist -p<cr>
 vnoremap <leader>gG :Gist -p<cr>
 nnoremap <leader>gw :Gbrowse<cr>
-"}}}
 
-" search {{{
 let g:leader_map['s'] = {
       \ 'name': '+search',
       \ ';': 'command-history',
@@ -676,23 +683,17 @@ nnoremap <leader>ss :call FzfSpell()<cr>
 nnoremap <leader>sp :FzfProjectRg<cr>
 nnoremap <leader>st :FzfBTags<cr>
 nnoremap <leader>sT :FzfTags<cr>
-"}}}
 
-" toggle {{{
 let g:leader_map.t = {
       \ 'name': '+toggle',
       \ 'h': 'search-highlights',
       \ 'i': 'indent-guides',
       \ 'n': 'line-numbers',
-      \ 'q': 'quickfix',
       \ }
 nnoremap <leader>th :nohls<cr>
 nnoremap <leader>ti :IndentLinesToggle<cr>
 nnoremap <leader>tn :setl number!<cr>
-nnoremap <leader>tq :call QuickfixToggle()<cr>
-"}}}
 
-" window {{{
 let g:leader_map.w = {
       \ 'name': '+window',
       \ '-': 'split-horizontal',
@@ -712,6 +713,5 @@ nnoremap <leader>ws <c-w>R
 nnoremap <leader>wt :tab split<cr>
 nnoremap <leader>wT :tabclose<cr>
 nnoremap <leader>ww :FzfWindows<cr>
-"}}}
-"}}}
+
 "}}}
