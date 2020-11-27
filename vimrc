@@ -613,6 +613,18 @@ nnoremap <leader>bd :Bwipeout<cr>
 nnoremap <leader>b[ :bprevious<cr>
 nnoremap <leader>b] :bnext<cr>
 
+let g:leader_map.c = {
+      \ 'name': '+code',
+      \ 'd': 'go-to-definition',
+      \ 'h': 'hover',
+      \ 'r': 'find-references',
+      \ 't': 'go-to-type-definition'
+      \ }
+nnoremap <leader>cd :ALEGoToDefinition<cr>
+nnoremap <leader>ch :ALEHover<cr>
+nnoremap <leader>cr :ALEFindReferences<cr>
+nnoremap <leader>ct :ALEGoToTypeDefinition<cr>
+
 let g:leader_map.e = {
       \ 'name': '+edit',
       \ ';': 'insert-semi-colon',
@@ -667,6 +679,7 @@ vnoremap <leader>gG :Gist -p<cr>
 nnoremap <leader>gw :Gbrowse<cr>
 
 let g:leader_map['s'] = {
+let g:leader_map.s = {
       \ 'name': '+search',
       \ ';': 'command-history',
       \ '/': 'search-history',
