@@ -55,6 +55,9 @@ Plug 'cespare/vim-toml'
 Plug 'maralla/vim-toml-enhance'
 Plug 'elzr/vim-json'
 
+" type: go
+Plug 'fatih/vim-go'
+
 " type: nim
 Plug 'alaviss/nim.nvim'
 
@@ -499,6 +502,9 @@ let g:netrw_browse_split = 1
 
 " nvim-lspconfig
 lua require'lspconfig'.rust_analyzer.setup{}
+lua require'lspconfig'.gopls.setup{}
+hi LspDiagnosticsDefaultError guifg=#5c6370 guibg=#282c34
+hi LspDiagnosticsFloatingError guifg=#abb2bf guibg=#282c34
 
 " onedark
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -507,6 +513,11 @@ let g:onedark_terminal_italics=1
 " rust.vim
 let g:rustfmt_autosave = 1
 let g:rustfmt_command = 'rustup run nightly rustfmt'
+
+" vim-go
+let g:go_code_completion_enabled = 0
+let g:go_test_show_name = 1
+let g:go_doc_keywordprg_enabled = 0
 
 " vim-markdown
 let g:vim_markdown_folding_disabled = 1
