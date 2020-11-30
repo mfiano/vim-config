@@ -40,6 +40,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-repeat'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-commentary'
+Plug 'jiangmiao/auto-pairs'
 
 " git support
 Plug 'tpope/vim-fugitive'
@@ -60,7 +61,7 @@ Plug 'alaviss/nim.nvim'
 " type: rust
 Plug 'timonv/vim-cargo'
 Plug 'rust-lang/rust.vim'
-Plug 'rhysd/rust-doc.vim'
+" Plug 'rhysd/rust-doc.vim'
 Plug 'racer-rust/vim-racer'
 
 " type: webdev
@@ -386,6 +387,8 @@ augroup ft_rust
         \ :T cargo run<cr>
   au filetype rust nnoremap <buffer> <localleader>R
         \ :T cargo run --release<cr>
+  au filetype rust nnoremap <buffer> <localleader>t
+        \ :T cargo test<cr>
 
 " Shell
 augroup ft_shell
