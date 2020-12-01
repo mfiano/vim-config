@@ -48,6 +48,15 @@ Plug 'itchyny/vim-gitbranch'
 Plug 'tpope/vim-rhubarb'
 Plug 'mattn/gist-vim'
 
+" type: bash
+Plug 'bash-lsp/bash-language-server'
+
+" type: common lisp
+Plug 'vlime/vlime'
+
+" type: go
+Plug 'fatih/vim-go'
+
 " type: misc text/data
 Plug 'rhysd/vim-gfm-syntax'
 Plug 'plasticboy/vim-markdown'
@@ -55,17 +64,16 @@ Plug 'cespare/vim-toml'
 Plug 'maralla/vim-toml-enhance'
 Plug 'elzr/vim-json'
 
-" type: go
-Plug 'fatih/vim-go'
-
 " type: nim
 Plug 'alaviss/nim.nvim'
 
 " type: rust
 Plug 'timonv/vim-cargo'
 Plug 'rust-lang/rust.vim'
-" Plug 'rhysd/rust-doc.vim'
 Plug 'racer-rust/vim-racer'
+
+" type: vim
+Plug 'iamcco/vim-language-server'
 
 " type: webdev
 Plug 'othree/html5.vim'
@@ -81,6 +89,7 @@ call plug#end()
 
 set autochdir
 set autoindent
+set autoread
 set backup
 set backupdir=~/.cache/nvim/backup//
 set background=dark
@@ -106,7 +115,7 @@ set ignorecase
 set laststatus=2
 set lazyredraw
 set matchpairs+=<:>
-set matchtime=2
+set matchtime=3
 set modelines=0
 set mouse=a
 set noerrorbells
@@ -116,8 +125,7 @@ set noswapfile
 set nowrap
 set number
 set ruler
-set scrolloff=2
-set signcolumn=auto
+set scrolloff=16
 set shiftround
 set shiftwidth=2
 set shortmess+=cI
@@ -125,13 +133,16 @@ set showbreak=↪
 set showcmd
 set showmatch
 set showmode
+set sidescrolloff=16
+set signcolumn=auto
 set smartcase
 set smartindent
 set softtabstop=2
 set spellfile=~/.vim/spell/custom.utf-8.add
+set splitbelow
 set splitright
 set synmaxcol=300
-set tabstop=4
+set tabstop=2
 set termencoding=utf-8
 set termguicolors
 set textwidth=80
@@ -147,7 +158,7 @@ set visualbell
 set wildignore+=*.swp,*~,.tmp,__pycache__/
 set wildignore+=.git/,.hg/,.svn/
 set wildignore+=*.exe,*.bin,*.dll,*.o,*.so
-set wildignore+=*.elc,*.fasl,*.dx64fsl,*.pyc,*.luac
+set wildignore+=*.elc,*.fasl,*.dx64fsl,*.lx64fsl,*.pyc,*.luac
 set wildignore+=*.jpg,*.jpeg,*.bmp,*.gif,*.png,*.tiff,*.tga
 set wildignore+=*.7z,*.bz2,*.dmg,*.gz,*.iso,*.jar,*.rar,*.tar,*.tgz,*.xz,*.zip
 set wildignore+=.DS_Store,Thumbs.db
@@ -199,6 +210,9 @@ augroup vim_options
   au bufreadpost quickfix nnoremap <buffer><cr> <cr>
   au winleave,insertenter * set nocursorline
   au winenter,insertleave * set cursorline
+  au vimresized * :wincmd =
+  au insertenter * :set listchars-=trail:⌴
+  au insertleave * :set listchars+=trail:⌴
 augroup end
 
 "}}}
@@ -292,6 +306,34 @@ fun! LightlineFileFormat()
         \ (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
 endfun
 
+fun! LispReplOpen()
+  vnew
+  let g:lisp_repl_job_id = termopen(g:lisp_repl_command)
+  call timer_start(2000, {
+        \ id -> vlime#plugin#ConnectREPL('127.0.0.1', 7002) })
+endfun
+
+fun! LispReplQuickload()
+  let root = GitFindRoot()
+  let systems = split(system('\find ' . root .
+        \ ' -iname *.asd -exec basename {} .asd \;'))
+  if len(systems) == 0
+    echom "Could not find any .asd files."
+    return
+  elseif len(systems) > 1
+    echom systems
+    echom "Found too many .asd files."
+    return
+  endif
+  call LispReplSend("(ql:quickload :" . systems[0] . ")\n")
+endfun
+
+fun! LispReplSend(payload)
+  for line in (split(a:payload, '\n'))
+    call jobsend(g:lisp_repl_job_id, line . "\n")
+  endfor
+endfun
+
 fun! SmartHome()
   let first_nonblank = match(getline('.'), '\S') + 1
   if first_nonblank == 0
@@ -309,6 +351,22 @@ fun! TermNew()
   set wfh
 endfun
 
+fun! VlimeCleanWindows()
+  call vlime#plugin#CloseWindow("arglist")
+  call vlime#plugin#CloseWindow("notes")
+  call vlime#plugin#CloseWindow("preview")
+  call vlime#plugin#CloseWindow("repl")
+  call vlime#plugin#CloseWindow("threads")
+  call vlime#plugin#CloseWindow("xref")
+endfun
+
+fun! VlimeMapKeys()
+  nnoremap <silent> <buffer> gd
+        \ :call vlime#plugin#FindDefinition(vlime#ui#CurAtom())<cr>
+  nnoremap <silent> <buffer> - :call VlimeCleanWindows()<cr>
+endfun
+
+
 fun! s:check_backspace() abort
     let col = col('.') - 1
     return !col || getline('.')[col - 1]  =~ '\s'
@@ -319,9 +377,11 @@ endfun
 " File types {{{
 
 " Common Lisp
+let g:lisp_repl_command = "sbcl-vlime"
 augroup ft_commonlisp
   au!
   au bufread,bufnewfile *.asd,*.ros setfiletype lisp
+  au filetype lisp hi link lispKey Keyword
   au filetype lisp setlocal nolisp
 augroup end
 
@@ -503,6 +563,8 @@ let g:netrw_browse_split = 1
 " nvim-lspconfig
 lua require'lspconfig'.rust_analyzer.setup{}
 lua require'lspconfig'.gopls.setup{}
+lua require'lspconfig'.vimls.setup{}
+lua require'lspconfig'.bashls.setup{}
 hi LspDiagnosticsDefaultError guifg=#5c6370 guibg=#282c34
 hi LspDiagnosticsFloatingError guifg=#abb2bf guibg=#282c34
 
@@ -533,6 +595,46 @@ let g:racer_experimental_completer = 1
 let g:signify_vcs_list = [ 'git' ]
 let g:signify_realtime = 0
 
+" vlime
+let g:vlime_cl_use_terminal = v:true
+let g:vlime_enable_autodoc = v:true
+let g:vlime_cl_impl = "sbcl"
+let g:vlime_window_settings = {
+      \ "sldb": { "pos": "belowright", "vertical": v:false },
+      \ "xref": { "pos": "belowright", "size": 5, "vertical": v:false },
+      \ "repl": { "pos": "belowright", "size": 10, "vertical": v:false },
+      \ "inspector": { "pos": "belowright", "vertical": v:false },
+      \ "arglist": { "pos": "botright", "size": 1, "vertical": v:false }
+      \ }
+
+augroup custom_vlime
+  au!
+  au filetype lisp,vlime_repl,vlime_inspector,vlime_sldb,vlime_notes,vlime_xref,
+        \vlime_preview call VlimeMapKeys()
+  au filetype lisp setlocal indentexpr=vlime#plugin#CalcCurIndent()
+  au filetype lisp nnoremap <buffer> <localleader>rr :call LispReplOpen()<cr>
+  au filetype lisp nnoremap <buffer> <localleader>q
+        \ :call LispReplQuickload()<cr>
+  au filetype vlime_repl setlocal nowrap winfixheight
+  au filetype vlime_repl nnoremap <buffer> i
+        \ :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
+  au filetype vlime_repl nnoremap <buffer> <2-leftmouse>
+        \ :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
+  au filetype vlime_sldb setlocal nowrap
+  au filetype vlime_sldb nnoremap <buffer> <cr>
+        \ :call vlime#ui#sldb#ChooseCurRestart()<cr>
+  au filetype vlime_inspector nnoremap <buffer> <2-leftmouse>
+        \ :call vlime#ui#inspector#InspectorSelect()<cr>
+  au filetype vlime_inspector nnoremap <buffer> <cr>
+        \ :call vlime#ui#inspector#InspectorSelect()<cr>
+  au filetype vlime_inspector nnoremap <buffer> p
+        \ :call vlime#ui#inspector#InspectorPop()<cr>
+  au filetype vlime_xref nnoremap <buffer> <cr>
+        \ :call vlime#ui#xref#OpenCurXref()<cr>
+  au filetype vlime_notes nnoremap <buffer> <cr>
+        \ :call vlime#ui#compiler_notes#OpenCurNote()<cr>
+augroup end
+
 "}}}
 
 " Bindings {{{
@@ -542,9 +644,11 @@ let g:signify_realtime = 0
 nnoremap ; :
 nnoremap <tab> za
 vnoremap <tab> za
+noremap <f1> <nop>
 inoremap <f1> <nop>
 nnoremap <f2> :terminal<cr>
 nnoremap Q :q<cr>
+nnoremap s :w!<cr>
 nnoremap - :wincmd =<cr>
 nnoremap <cr> o<esc>
 nnoremap <f9> m'ggg?G``
@@ -591,6 +695,7 @@ inoremap <silent><expr> <tab>
   \ <sid>check_backspace() ? "\<tab>" :
   \ completion#trigger_completion()
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+nnoremap zl :let @z=@"<cr>x$p:let @"=@z<cr>
 
 " LSP
 nnoremap <silent> ga <cmd>lua vim.lsp.buf.code_action()<cr>
