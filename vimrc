@@ -28,8 +28,11 @@ Plug 'mhinz/vim-signify'
 Plug 'ryanoasis/vim-devicons'
 Plug 'itchyny/lightline.vim'
 Plug 'Yggdroot/indentLine'
-Plug 'preservim/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'lambdalisue/nerdfont.vim'
+Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern-git-status.vim'
+Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+Plug 'lambdalisue/fern-hijack.vim'
 
 " editing
 Plug 'chaoren/vim-wordmotion'
@@ -491,16 +494,11 @@ let g:ale_rust_rls_config = {
       \ 'rust': { 'clippy_preference': 'on' }
       \}
 
-" diagnostic-nvim
-let g:diagnostic_enable_virtual_text = 1
-let g:diagnostic_trimmed_virtual_text = '40'
-let g:diagnostic_insert_delay = 1
-au CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()
-au CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
-\ lua require'lsp_extensions'.inlay_hints{ prefix = '', highlight = "Comment" }
-
 " echodoc
 let g:echodoc#enable_at_startup = 1
+
+" fern
+let g:fern#renderer = "nerdfont"
 
 " fzf
 let g:fzf_command_prefix = 'Fzf'
@@ -776,7 +774,7 @@ nnoremap <leader>fr :FzfHistory<cr>
 nnoremap <leader>fR :Rename
 nnoremap <leader>fs :w!<cr>
 nnoremap <leader>fS :SudoWrite<cr>
-nnoremap <leader>ft :NERDTreeToggle<cr>
+nnoremap <leader>ft :Fern . -drawer -toggle<cr>
 nnoremap <leader>fv :e $MYVIMRC<cr>
 nnoremap <leader>fV :vsplit $MYVIMRC<cr>
 
