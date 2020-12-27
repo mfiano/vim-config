@@ -51,7 +51,7 @@ noremap <expr> <silent> <home> SmartHome()
 imap <silent> <home> <c-o><home>
 inoremap <silent><expr> <tab>
   \ pumvisible() ? "\<c-n>" :
-  \ <sid>check_backspace() ? "\<tab>" :
+  \ CheckBackspace() ? "\<tab>" :
   \ completion#trigger_completion()
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 nnoremap zl :let @z=@"<cr>x$p:let @"=@z<cr>
