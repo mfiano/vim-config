@@ -9,4 +9,4 @@ augroup end
 
 " Language Server Protocol setup
 
-lua require'lspconfig'.vimls.setup{}
+lua require'lspconfig'.vimls.setup{on_attach=require'completion'.on_attach}

@@ -57,6 +57,9 @@ Plug 'vlime/vlime'
 " type: go
 Plug 'fatih/vim-go'
 
+" type: julia
+Plug 'JuliaEditorSupport/julia-vim'
+
 " type: misc text/data
 Plug 'rhysd/vim-gfm-syntax'
 Plug 'plasticboy/vim-markdown'

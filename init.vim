@@ -15,6 +15,7 @@ source ~/.config/nvim/conf/type-diff.vim
 source ~/.config/nvim/conf/type-glsl.vim
 source ~/.config/nvim/conf/type-go.vim
 source ~/.config/nvim/conf/type-html.vim
+source ~/.config/nvim/conf/type-julia.vim
 source ~/.config/nvim/conf/type-json.vim
 source ~/.config/nvim/conf/type-markdown.vim
 source ~/.config/nvim/conf/type-nim.vim

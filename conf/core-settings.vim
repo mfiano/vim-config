@@ -27,13 +27,13 @@ set nosplitbelow
 set noswapfile
 set nowrap
 set number
-set scrolloff=16
+set scrolloff=3
 set shiftround
 set shiftwidth=2
 set shortmess+=cI
 set showbreak=↪
 set showmatch
-set sidescrolloff=16
+set sidescrolloff=4
 set smartcase
 set smartindent
 set softtabstop=2

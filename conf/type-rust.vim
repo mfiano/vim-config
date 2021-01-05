@@ -26,4 +26,4 @@ augroup ft_rust
 
 " Language Server Protocol setup
 
-lua require'lspconfig'.rust_analyzer.setup{}
+lua require'lspconfig'.rust_analyzer.setup{on_attach=require'completion'.on_attach}

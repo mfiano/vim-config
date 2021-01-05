@@ -6,4 +6,4 @@ let g:go_doc_keywordprg_enabled = 0
 
 " Language Server Protocol support
 
-lua require'lspconfig'.gopls.setup{}
+lua require'lspconfig'.gopls.setup{on_attach=require'completion'.on_attach}
