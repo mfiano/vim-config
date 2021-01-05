@@ -1,10 +1,5 @@
 " Auto commands
 
-augroup strip_whitespace
-  au!
-  au bufwritepre <buffer> StripWhitespace
-augroup end
-
 augroup vim_options
   au!
   au vimleave * set guicursor=a:hor25

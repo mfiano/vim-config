@@ -4,6 +4,8 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 let g:onedark_terminal_italics=1
 let g:echodoc#enable_at_startup = 1
 let g:indentLine_enabled = 1
+let g:better_whitespace_enabled=0
+let g:strip_whitespace_on_save=1
 let g:lightline = {
       \ 'colorscheme': 'onedark',
       \ 'active': {
