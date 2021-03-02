@@ -1,3 +1,7 @@
+" Theme
+
+colorscheme onedark
+
 " Settings
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -21,10 +25,8 @@ let g:lightline = {
       \   'gitbranch': 'gitbranch#name',
       \   'lastcompletion': 'LightlineCompletion'
       \ }}
-
-" Theme
-
-colorscheme onedark
+let g:highlightedyank_highlight_duration=250
+highlight HighlightedyankRegion cterm=reverse gui=reverse
 
 " Functions
 
@@ -41,6 +43,5 @@ fun! LightlineFileType()
 endfun
 
 fun! LightlineFileFormat()
-  return winwidth(0) > 70 ?
-        \ (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+  return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
 endfun

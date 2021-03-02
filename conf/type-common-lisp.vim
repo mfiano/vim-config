@@ -27,26 +27,19 @@ augroup custom_vlime
         \vlime_preview call VlimeMapKeys()
   au filetype lisp setlocal indentexpr=vlime#plugin#CalcCurIndent()
   au filetype lisp nnoremap <buffer> <localleader>rr :call LispReplOpen()<cr>
-  au filetype lisp nnoremap <buffer> <localleader>q
-        \ :call LispReplQuickload()<cr>
+  au filetype lisp nnoremap <buffer> <localleader>q :call LispReplQuickload()<cr>
   au filetype vlime_repl setlocal nowrap winfixheight
-  au filetype vlime_repl nnoremap <buffer> i
-        \ :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
+  au filetype vlime_repl nnoremap <buffer> i :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
   au filetype vlime_repl nnoremap <buffer> <2-leftmouse>
         \ :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
   au filetype vlime_sldb setlocal nowrap
-  au filetype vlime_sldb nnoremap <buffer> <cr>
-        \ :call vlime#ui#sldb#ChooseCurRestart()<cr>
+  au filetype vlime_sldb nnoremap <buffer> <cr> :call vlime#ui#sldb#ChooseCurRestart()<cr>
   au filetype vlime_inspector nnoremap <buffer> <2-leftmouse>
         \ :call vlime#ui#inspector#InspectorSelect()<cr>
-  au filetype vlime_inspector nnoremap <buffer> <cr>
-        \ :call vlime#ui#inspector#InspectorSelect()<cr>
-  au filetype vlime_inspector nnoremap <buffer> p
-        \ :call vlime#ui#inspector#InspectorPop()<cr>
-  au filetype vlime_xref nnoremap <buffer> <cr>
-        \ :call vlime#ui#xref#OpenCurXref()<cr>
-  au filetype vlime_notes nnoremap <buffer> <cr>
-        \ :call vlime#ui#compiler_notes#OpenCurNote()<cr>
+  au filetype vlime_inspector nnoremap <buffer> <cr> :call vlime#ui#inspector#InspectorSelect()<cr>
+  au filetype vlime_inspector nnoremap <buffer> p :call vlime#ui#inspector#InspectorPop()<cr>
+  au filetype vlime_xref nnoremap <buffer> <cr> :call vlime#ui#xref#OpenCurXref()<cr>
+  au filetype vlime_notes nnoremap <buffer> <cr> :call vlime#ui#compiler_notes#OpenCurNote()<cr>
 augroup end
 
 " Functions
@@ -54,14 +47,12 @@ augroup end
 fun! LispReplOpen()
   vnew
   let g:lisp_repl_job_id = termopen(g:lisp_repl_command)
-  call timer_start(2000, {
-        \ id -> vlime#plugin#ConnectREPL('127.0.0.1', 7002) })
+  call timer_start(2000, { id -> vlime#plugin#ConnectREPL('127.0.0.1', 7002) })
 endfun
 
 fun! LispReplQuickload()
   let root = GitFindRoot()
-  let systems = split(system('\find ' . root .
-        \ ' -iname *.asd -exec basename {} .asd \;'))
+  let systems = split(system('\find ' . root . ' -iname *.asd -exec basename {} .asd \;'))
   if len(systems) == 0
     echom "Could not find any .asd files."
     return
@@ -89,7 +80,6 @@ fun! VlimeCleanWindows()
 endfun
 
 fun! VlimeMapKeys()
-  nnoremap <silent> <buffer> gd
-        \ :call vlime#plugin#FindDefinition(vlime#ui#CurAtom())<cr>
+  nnoremap <silent> <buffer> gd :call vlime#plugin#FindDefinition(vlime#ui#CurAtom())<cr>
   nnoremap <silent> <buffer> - :call VlimeCleanWindows()<cr>
 endfun

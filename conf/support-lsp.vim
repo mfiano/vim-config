@@ -2,16 +2,11 @@
 
 let g:ale_completion_enabled = 0
 let g:ale_fix_on_save = 1
-let g:ale_fixers = {
-      \ '*': ['remove_trailing_lines', 'trim_whitespace'],
-      \ 'nim': ['nimpretty'],
-      \}
+let g:ale_fixers = { '*': ['remove_trailing_lines', 'trim_whitespace'], }
 let g:ale_open_list = 1
 let g:ale_nim_nimpretty_options = '--maxLineLen:100'
 let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
-let g:ale_rust_rls_config = {
-      \ 'rust': { 'clippy_preference': 'on' }
-      \}
+let g:ale_rust_rls_config = { 'rust': { 'clippy_preference': 'on' } }
 
 " Theme modifications
 

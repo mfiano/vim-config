@@ -30,6 +30,7 @@ Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-git-status.vim'
 Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'lambdalisue/fern-hijack.vim'
+Plug 'machakann/vim-highlightedyank'
 
 " editing
 Plug 'chaoren/vim-wordmotion'
@@ -40,7 +41,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-repeat'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-commentary'
-Plug 'jiangmiao/auto-pairs'
+Plug 'Raimondi/delimitMate'
 
 " git support
 Plug 'tpope/vim-fugitive'

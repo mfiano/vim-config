@@ -11,18 +11,12 @@ augroup ft_rust
   au!
   au filetype rust nnoremap <localleader>f :RustFmt<cr>
   au filetype rust nnoremap <buffer> <localleader>; :call TermNew()<cr>
-  au filetype rust nnoremap <buffer> <localleader>b
-        \ :T cargo build<cr>
-  au filetype rust nnoremap <buffer> <localleader>B
-        \ :T cargo build --release<cr>
-  au filetype rust nnoremap <buffer> <localleader>c
-        \ :T cargo check<cr>
-  au filetype rust nnoremap <buffer> <localleader>r
-        \ :T cargo run<cr>
-  au filetype rust nnoremap <buffer> <localleader>R
-        \ :T cargo run --release<cr>
-  au filetype rust nnoremap <buffer> <localleader>t
-        \ :T cargo test<cr>
+  au filetype rust nnoremap <buffer> <localleader>b :T cargo build<cr>
+  au filetype rust nnoremap <buffer> <localleader>B :T cargo build --release<cr>
+  au filetype rust nnoremap <buffer> <localleader>c :T cargo check<cr>
+  au filetype rust nnoremap <buffer> <localleader>r :T cargo run<cr>
+  au filetype rust nnoremap <buffer> <localleader>R :T cargo run --release<cr>
+  au filetype rust nnoremap <buffer> <localleader>t :T cargo test<cr>
 
 " Language Server Protocol setup
 
