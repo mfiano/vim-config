@@ -589,6 +589,10 @@ map N <plug>(incsearch-nohl-N)
 " Scroll through LSP popup windows
 nnoremap <silent> <pageup> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<cr>
 nnoremap <silent> <pagedown> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<cr>
+
+" Toggle terminal
+nnoremap <silent> <a-tab> :FloatermToggle<cr>
+tnoremap <silent> <a-tab> <c-\><c-n>:FloatermToggle<cr>
 " }}}
 " Leader {{{
 nnoremap <leader>bb :Telescope buffers<cr>
