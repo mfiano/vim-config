@@ -63,6 +63,8 @@ Plug 'phaazon/hop.nvim' " Quickly jump to any word or line in a buffer
 Plug 'hrsh7th/nvim-compe' " Completion system
 Plug 'voldikss/vim-floaterm' " Interact with floating windows
 Plug 'ojroques/vim-oscyank' " Allow copying text to the local system clipboard across SSH
+Plug 'mhinz/vim-startify' " Start screen
+Plug 'windwp/nvim-autopairs' " Balancing of character pairs like parentheses
 call plug#end()
 " }}}
 
@@ -82,6 +84,7 @@ set expandtab
 set fileencoding=utf-8
 set fillchars=vert:\┃,diff:•,fold:-
 set foldlevelstart=0
+set foldopen-=block
 set formatoptions=tcqnj
 set gdefault
 set hidden
@@ -333,6 +336,9 @@ lua require('plugin.kommentary')
 " neoterm {{{
 let g:neoterm_autoscroll = 1
 " }}}
+" nvim-autopairs {{{
+lua require('nvim-autopairs').setup()
+" }}}
 " nvim-compe {{{
 let g:compe = {}
 let g:compe.enabled = v:true
@@ -461,6 +467,13 @@ let g:which_key_map.g.g = 'gist'
 let g:which_key_map.g.G = 'gist private'
 let g:which_key_map.g.s = 'status'
 let g:which_key_map.g.w = 'git web browse'
+let g:which_key_map.l = { 'name': '+language' }
+let g:which_key_map.l.a = 'code action'
+let g:which_key_map.l.d = 'definition'
+let g:which_key_map.l.f = 'find'
+let g:which_key_map.l.h = 'hover'
+let g:which_key_map.l.r = 'rename'
+let g:which_key_map.l.s = 'signature'
 let g:which_key_map.p = { 'name': '+project' }
 let g:which_key_map.p.f = 'find in project'
 let g:which_key_map.p.p = 'switch project'
@@ -475,6 +488,7 @@ let g:which_key_map.t = { 'name': '+toggle' }
 let g:which_key_map.t.h = 'search highlight'
 let g:which_key_map.t.i = 'indent guides'
 let g:which_key_map.t.n = 'line numbers'
+let g:which_key_map.t.t = 'terminal'
 let g:which_key_map.w = { 'name': '+window' }
 let g:which_key_map.w['-'] = 'split horizontal'
 let g:which_key_map.w['|'] = 'split vertical'
@@ -551,19 +565,6 @@ imap <silent> <home> <c-o><home>
 nnoremap <tab> za
 vnoremap <tab> za
 
-" Language Server Protocol
-nnoremap <silent> [e :Lspsaga diagnostic_jump_prev<cr>
-nnoremap <silent> ]e :Lspsaga diagnostic_jump_next<cr>
-nnoremap <silent> ga :Lspsaga code_action<cr>
-vnoremap <silent> ga :<c-u>Lspsaga range_code_action<cr>
-nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<cr>
-nnoremap <silent> gh :Lspsaga lsp_finder<cr>
-nnoremap <silent> gR :Lspsaga rename<cr>
-nnoremap <silent> gs :Lspsaga signature_help<cr>
-nnoremap <silent> K :Lspsaga hover_doc<cr>
-nnoremap <silent> <a-d> :Lspsaga open_floaterm<cr>
-tnoremap <silent> <a-d> <c-\><c-n>:Lspsaga close_floaterm<cr>
-
 " Leader keys
 let g:mapleader = ' '
 let g:maplocalleader = ","
@@ -579,8 +580,9 @@ map ? <plug>(incsearch-backward)
 map n <plug>(incsearch-nohl-n)
 map N <plug>(incsearch-nohl-N)
 
-nnoremap <silent> <leader>tt :FloatermToggle<cr>
-tnoremap <silent> <leader>tt <c-\><c-n>:FloatermToggle<cr>
+" Scroll through LSP popup windows
+nnoremap <silent> <pageup> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<cr>
+nnoremap <silent> <pagedown> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<cr>
 " }}}
 " Leader {{{
 nnoremap <leader>bb :Telescope buffers<cr>
@@ -607,6 +609,13 @@ nnoremap <leader>gG :Gist! -p<cr>
 vnoremap <leader>gG :Gist! -p<cr>
 nnoremap <leader>gs :Neogit<cr>
 nnoremap <leader>gw :Gbrowse<cr>
+nnoremap <leader>la :Lspsaga code_action<cr>
+vnoremap <leader>la :<c-u>Lspsaga range_code_action<cr>
+nnoremap <leader>ld <cmd>lua vim.lsp.buf.definition()<cr>
+nnoremap <leader>lf :Lspsaga lsp_finder<cr>
+nnoremap <leader>lh :Lspsaga hover_doc<cr>
+nnoremap <leader>lr :Lspsaga rename<cr>
+nnoremap <leader>ls :Lspsaga signature_help<cr>
 nnoremap <leader>pf :Telescope git_files<cr>
 nnoremap <leader>pp :Telescope project<cr>
 nnoremap <leader>s; :Telescope command_history<cr>
@@ -618,6 +627,8 @@ nnoremap <leader>ss :Telescope spell_suggest<cr>
 nnoremap <leader>th :nohls<cr>
 nnoremap <leader>ti :IndentBlanklineToggle<cr>
 nnoremap <leader>tn :setl number!<cr>
+nnoremap <silent> <leader>tt :FloatermToggle<cr>
+tnoremap <silent> <leader>tt <c-\><c-n>:FloatermToggle<cr>
 nnoremap <leader>w- :split<cr>
 nnoremap <leader>w\| :vsplit<cr>
 nnoremap <leader>w= <c-w>=
