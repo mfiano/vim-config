@@ -291,10 +291,6 @@ fun! SmartHome() " {{{
   endif
   return &wrap && wincol() > 1 ? 'g^' : '^'
 endfun " }}}
-fun! CheckBackspace() abort " {{{
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfun " }}}
 
 " Plugin settings
 " ale {{{
