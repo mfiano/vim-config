@@ -493,6 +493,12 @@ let g:which_key_map.t.h = 'search highlight'
 let g:which_key_map.t.i = 'indent guides'
 let g:which_key_map.t.n = 'line numbers'
 let g:which_key_map.t.t = 'terminal'
+let g:which_key_map.v = { 'name': '+vim' }
+let g:which_key_map.v.c = 'packages clean'
+let g:which_key_map.v.i = 'packages install'
+let g:which_key_map.v.s = 'packages status'
+let g:which_key_map.v.u = 'packages update'
+let g:which_key_map.v.U = 'package manager upgrade'
 let g:which_key_map.w = { 'name': '+window' }
 let g:which_key_map.w['-'] = 'split horizontal'
 let g:which_key_map.w['|'] = 'split vertical'
@@ -633,6 +639,11 @@ nnoremap <leader>ti :IndentBlanklineToggle<cr>
 nnoremap <leader>tn :setl number!<cr>
 nnoremap <silent> <leader>tt :FloatermToggle<cr>
 tnoremap <silent> <leader>tt <c-\><c-n>:FloatermToggle<cr>
+nnoremap <leader>vc :PlugClean<cr>
+nnoremap <leader>vi :PlugInstall<cr>
+nnoremap <leader>vs :PlugStatus<cr>
+nnoremap <leader>vu :PlugUpdate<cr>
+nnoremap <leader>vU :PlugUpgrade<cr>
 nnoremap <leader>w- :split<cr>
 nnoremap <leader>w\| :vsplit<cr>
 nnoremap <leader>w= <c-w>=
