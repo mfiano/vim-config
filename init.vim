@@ -333,6 +333,10 @@ let g:indent_blankline_use_treesitter = v:true
 " kommentary {{{
 lua require('plugin.kommentary')
 " }}}
+" neogit {{{
+hi NeogitDiffDeleteHighlight guifg=#282c34 guibg=#e06c75
+hi NeogitDiffAddHighlight guifg=#282c34 guibg=#98c379
+" }}}
 " neoterm {{{
 let g:neoterm_autoscroll = 1
 " }}}
