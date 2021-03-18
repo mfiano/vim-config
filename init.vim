@@ -637,8 +637,6 @@ nnoremap <leader>ss :Telescope spell_suggest<cr>
 nnoremap <leader>th :nohls<cr>
 nnoremap <leader>ti :IndentBlanklineToggle<cr>
 nnoremap <leader>tn :setl number!<cr>
-nnoremap <silent> <leader>tt :FloatermToggle<cr>
-tnoremap <silent> <leader>tt <c-\><c-n>:FloatermToggle<cr>
 nnoremap <leader>vc :PlugClean<cr>
 nnoremap <leader>vi :PlugInstall<cr>
 nnoremap <leader>vs :PlugStatus<cr>
