@@ -360,13 +360,13 @@ let g:compe.documentation = v:true
 let g:compe.source = {}
 let g:compe.source.path = v:true
 let g:compe.source.buffer = v:true
-let g:compe.source.calc = v:true
-let g:compe.source.vsnip = v:true
+let g:compe.source.calc = v:false
+let g:compe.source.vsnip = v:false
 let g:compe.source.nvim_lsp = v:true
 let g:compe.source.nvim_lua = v:true
-let g:compe.source.spell = v:true
+let g:compe.source.spell = v:false
 let g:compe.source.tags = v:true
-let g:compe.source.snippets_nvim = v:true
+let g:compe.source.snippets_nvim = v:false
 let g:compe.source.treesitter = v:true
 let g:compe.source.omni = v:true
 " }}}
