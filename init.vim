@@ -212,7 +212,7 @@ augroup ft_markdown " {{{
 augroup end " }}}
 augroup ft_nim " {{{
   au!
-  au filetype nim nnoremap <buffer> <localleader>; \ :FloatermNew --name=nim --title=nim\ $1/$2<cr>
+  au filetype nim nnoremap <buffer> <localleader>; :FloatermNew --name=nim --title=nim\ $1/$2<cr>
   au filetype nim nnoremap <buffer> <localleader>b
         \ :FloatermSend --name=nim nim c -r --verbosity:2 --hints:off --outdir:build %:p<cr>
         \:FloatermHide!<cr>
