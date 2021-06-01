@@ -100,6 +100,7 @@ set noshowmode
 set noswapfile
 set nowrap
 set number
+set pumheight=10
 set scrolloff=3
 set shiftround
 set shiftwidth=2
@@ -282,6 +283,10 @@ augroup ft_vim " {{{
 augroup end " }}}
 
 " Functions
+fun! CheckBackspace() abort " {{{
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfun " }}}
 fun! SmartHome() " {{{
   let first_nonblank = match(getline('.'), '\S') + 1
   if first_nonblank == 0
@@ -360,7 +365,7 @@ lua require('nvim-autopairs').setup()
 " nvim-compe {{{
 let g:compe = {}
 let g:compe.enabled = v:true
-let g:compe.autocomplete = v:true
+let g:compe.autocomplete = v:false
 let g:compe.debug = v:false
 let g:compe.min_length = 1
 let g:compe.preselect = 'enable'
@@ -381,7 +386,7 @@ let g:compe.source.nvim_lua = v:true
 let g:compe.source.spell = v:false
 let g:compe.source.tags = v:true
 let g:compe.source.snippets_nvim = v:false
-let g:compe.source.treesitter = v:true
+let g:compe.source.treesitter = v:false
 let g:compe.source.omni = v:true
 " }}}
 " nvim-tree {{{
@@ -578,9 +583,10 @@ vnoremap > >gv
 xnoremap <a-up> :move '<-2<cr>gv-gv
 xnoremap <a-down> :move '>+1<cr>gv-gv
 
-" Tab completion selection
+" Tab completion
 inoremap <silent> <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <silent> <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+imap <silent><expr> <tab> pumvisible() ?  "\<c-n>" : CheckBackspace() ? "\<tab>" : compe#complete()
 
 " Equalize window sizes
 nnoremap - :wincmd =<cr>
