@@ -71,6 +71,7 @@ call plug#end()
 " General Settings
 " Neovim options {{{
 set autochdir
+set autoread
 set backup
 set backupdir=$XDG_CACHE_HOME/nvim/backup//
 set clipboard=unnamedplus
