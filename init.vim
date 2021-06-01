@@ -624,8 +624,8 @@ nnoremap <leader>el :HopLine<cr>
 nnoremap <leader>ew :HopWord<cr>
 vnoremap <leader>ey :OSCYank<cr>
 nnoremap <leader>fd :Delete<cr>
-nnoremap <leader>ff :Telescope find_files<cr>
-nnoremap <leader>fh :Telescope find_files cwd=~<cr>
+nnoremap <leader>ff :Telescope find_files hidden=true<cr>
+nnoremap <leader>fh :Telescope find_files cwd=~ hidden=true<cr>
 nnoremap <leader>fr :Telescope oldfiles<cr>
 nnoremap <leader>fR :Rename<space>
 nnoremap <leader>fs :w!<cr>
