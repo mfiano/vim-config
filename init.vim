@@ -65,6 +65,7 @@ Plug 'voldikss/vim-floaterm' " Interact with floating windows
 Plug 'ojroques/vim-oscyank' " Allow copying text to the local system clipboard across SSH
 Plug 'mhinz/vim-startify' " Start screen
 Plug 'windwp/nvim-autopairs' " Balancing of character pairs like parentheses
+Plug 'guns/vim-sexp' " Manage s-expressions
 call plug#end()
 " }}}
 
@@ -173,6 +174,7 @@ augroup ft_commonlisp " {{{
   au bufread,bufnewfile *.asd,*.ros setfiletype lisp
   au filetype lisp hi link lispKey Keyword
   au filetype lisp setlocal nolisp
+  au filetype lisp call SexpMappings()
 augroup end " }}}
 augroup ft_css " {{{
   au!
@@ -190,8 +192,7 @@ augroup end " }}}
 augroup ft_go " {{{
   au!
   lua require'lspconfig'.gopls.setup{}
-augroup end
-  " }}}
+augroup end " }}}
 augroup ft_html " {{{
   au!
   au filetype html setlocal foldmethod=indent
@@ -290,6 +291,23 @@ fun! SmartHome() " {{{
     return '0'
   endif
   return &wrap && wincol() > 1 ? 'g^' : '^'
+endfun " }}}
+fun! SexpMappings() " {{{
+nmap <silent><buffer> ( <plug>(sexp_move_to_prev_bracket)
+xmap <silent><buffer> ( <plug>(sexp_move_to_prev_bracket)
+omap <silent><buffer> ( <plug>(sexp_move_to_prev_bracket)
+nmap <silent><buffer> ) <plug>(sexp_move_to_next_bracket)
+xmap <silent><buffer> ) <plug>(sexp_move_to_next_bracket)
+omap <silent><buffer> ) <plug>(sexp_move_to_next_bracket)
+nmap <silent><buffer> <localleader>b <plug>(sexp_capture_prev_element)
+nmap <silent><buffer> <localleader>B <plug>(sexp_capture_next_element)
+nmap <silent><buffer> <localleader>r <plug>(sexp_raise_list)
+nmap <silent><buffer> <localleader>s <plug>(sexp_emit_head_element)
+nmap <silent><buffer> <localleader>S <plug>(sexp_emit_tail_element)
+nmap <silent><buffer> <localleader>t <plug>(sexp_swap_element_backward)
+nmap <silent><buffer> <localleader>T <plug>(sexp_swap_list_backward)
+nmap <silent><buffer> <localleader>w <plug>(sexp_round_head_wrap_element)
+nmap <silent><buffer> <localleader>W <plug>(sexp_splice_list)
 endfun " }}}
 
 " Plugin settings
@@ -432,6 +450,10 @@ let g:racer_experimental_completer = 1
 " }}}
 " vim-rooter {{{
 let g:rooter_silent_chdir = 1
+" }}}
+" vim-sexp {{{
+let g:sexp_filetypes = ''
+let g:sexp_insert_after_wrap = v:false
 " }}}
 " vim-which-key {{{
 let g:which_key_timeout = 100
