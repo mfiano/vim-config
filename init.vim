@@ -65,6 +65,7 @@ Plug 'voldikss/vim-floaterm' " Interact with floating windows
 Plug 'ojroques/vim-oscyank' " Allow copying text to the local system clipboard across SSH
 Plug 'mhinz/vim-startify' " Start screen
 Plug 'guns/vim-sexp' " Manage s-expressions
+Plug 'vlime/vlime' " Lisp IDE
 call plug#end()
 " }}}
 
@@ -175,7 +176,62 @@ augroup ft_commonlisp " {{{
   au bufread,bufnewfile *.asd,*.ros setfiletype lisp
   au filetype lisp hi link lispKey Keyword
   au filetype lisp setlocal nolisp
+  au filetype lisp setlocal indentexpr=vlime#plugin#CalcCurIndent()
   au filetype lisp call SexpMappings()
+  au filetype lisp nnoremap <silent> <buffer> gd
+        \ :call vlime#plugin#FindDefinition(vlime#ui#CurAtom())<cr>
+  au filetype lisp nnoremap <silent> <buffer> gb <c-o>
+  au filetype lisp nnoremap <silent> <buffer> - :call vlime#plugin#CloseWindow("")<cr>
+  au filetype lisp imap <silent><expr> <tab> pumvisible() ? "\<c-n>" : CheckBackspace() ? "\<tab>"
+        \ : vlime#plugin#VlimeKey("tab")
+  au filetype lisp nnoremap <silent> <buffer> <localleader>cc
+        \ :call vlime#plugin#Compile(vlime#ui#CurTopExpr(v:true))<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>cl
+        \ :call vlime#plugin#LoadFile(expand("%:p"))<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>h<
+        \ :call vlime#plugin#XRefSymbol("CALLS", vlime#ui#CurAtom())<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>h>
+        \ :call vlime#plugin#XRefSymbol("CALLS-WHO", vlime#ui#CurAtom())<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>hd
+        \ :call vlime#plugin#DisassembleForm(vlime#ui#CurExpr())<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>hh
+        \ :call vlime#plugin#DescribeSymbol(vlime#ui#CurAtom())<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>me
+        \ :call vlime#plugin#ExpandMacro(vlime#ui#CurExpr(), "expand")<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>rc
+        \ :call vlime#ui#repl#ClearREPLBuffer()<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>ri :call vlime#plugin#SendToREPL()<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>rr
+        \ :call vlime#server#New(v:true, get(g:, "vlime_cl_use_terminal", v:true))<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>rp :call vlime#plugin#SetPackage()<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>rs
+        \ :call vlime#plugin#StopCurrentServer()<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>rS
+        \ :call vlime#plugin#StopSelectedServer()<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>s
+        \ :call vlime#plugin#SendToREPL(vlime#ui#CurExprOrAtom())<cr>
+  au filetype vlime_repl setlocal nowrap winfixheight
+  au filetype vlime_repl nnoremap <buffer> <cr> :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
+  au filetype vlime_repl nnoremap <buffer> <2-leftmouse>
+        \ :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
+  au filetype vlime_sldb setlocal nowrap
+  au filetype vlime_sldb nnoremap <buffer> <cr> :call vlime#ui#sldb#ChooseCurRestart()<cr>
+  au filetype vlime_sldb nnoremap <buffer> a :call b:vlime_conn.SLDBAbort()<cr>
+  au filetype vlime_sldb nnoremap <buffer> c :call b:vlime_conn.SLDBContinue()<cr>
+  au filetype vlime_sldb nnoremap <buffer> e :call vlime#ui#sldb#SendValueInCurFrameToREPL()<cr>
+  au filetype vlime_sldb nnoremap <buffer> q :call b:vlime_conn.SLDBAbort()<cr>
+  au filetype vlime_inspector nnoremap <buffer> <2-leftmouse>
+        \ :call vlime#ui#inspector#InspectorSelect()<cr>
+  au filetype vlime_inspector nnoremap <buffer> <cr> :call vlime#ui#inspector#InspectorSelect()<cr>
+  au filetype vlime_inspector nnoremap <buffer> <m-cr>
+        \ :call vlime#ui#inspector#SendCurValueToREPL()<cr>
+  au filetype vlime_inspector nnoremap <buffer> gb :call vlime#ui#inspector#InspectorPop()<cr>
+  au filetype vlime_inspector nnoremap <buffer> gr
+        \ :call b:vlime_conn.InspectorReinspect({c, r -> c.ui.OnInspect(c, r, v:null, v:null)})<cr>
+  au filetype vlime_inspector nnoremap <buffer> q :bd<cr>
+  au filetype vlime_xref nnoremap <buffer> <cr>
+        \ :call vlime#ui#xref#OpenCurXref(v:true, "vsplit")<cr>
+  au filetype vlime_notes nnoremap <buffer> <cr> :call vlime#ui#compiler_notes#OpenCurNote()<cr>
 augroup end " }}}
 augroup ft_css " {{{
   au!
@@ -538,6 +594,20 @@ augroup which_key
   au filetype which_key set laststatus=0 noruler | au bufleave <buffer> set laststatus=2 ruler
 augroup end
 " }}}
+" vlime {{{
+let g:vlime_leader = '\'
+let g:vlime_cl_use_terminal = v:true
+let g:vlime_enable_autodoc = v:true
+let g:vlime_cl_impl = "sbcl"
+let g:vlime_window_settings = {
+      \ "sldb": { "pos": "belowright", "vertical": v:false },
+      \ "xref": { "pos": "belowright", "size": 5, "vertical": v:false },
+      \ "repl": { "pos": "belowright", "size": 10, "vertical": v:false },
+      \ "inspector": { "pos": "belowright", "vertical": v:false },
+      \ "preview": { "pos": "belowright", "vertical": v:false },
+      \ "arglist": { "pos": "botright", "size": 1, "vertical": v:false }
+      \ }
+" }}}
 
 " Key bindings
 " Global {{{
@@ -587,6 +657,7 @@ xnoremap <a-down> :move '>+1<cr>gv-gv
 " Tab completion
 inoremap <silent> <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <silent> <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+inoremap <silent> <expr><cr> pumvisible() ? compe#confirm() : "\<cr>"
 imap <silent><expr> <tab> pumvisible() ?  "\<c-n>" : CheckBackspace() ? "\<tab>" : compe#complete()
 
 " Equalize window sizes
