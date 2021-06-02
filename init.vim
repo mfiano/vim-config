@@ -178,7 +178,7 @@ augroup ft_commonlisp " {{{
   au filetype lisp hi link lispKey Keyword
   au filetype lisp setlocal nolisp
   au filetype lisp setlocal indentexpr=vlime#plugin#CalcCurIndent()
-  au filetype lisp call SexpMappings()
+  au filetype lisp,vlime_input call SexpMappings()
   au filetype lisp nnoremap <silent> <buffer> gd
         \ :call vlime#plugin#FindDefinition(vlime#ui#CurAtom())<cr>
   au filetype lisp nnoremap <silent> <buffer> gb <c-o>
@@ -507,6 +507,10 @@ let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_auto_insert_bullets = 0
+" }}}
+" vim-parinfer {{{
+let g:vim_parinfer_globs = ['*.lisp', '*.el', '*.scm', '*.asd']
+let g:vim_parinfer_filetypes = ['lisp', 'scheme', 'vlime_input']
 " }}}
 " vim-racer {{{
 let g:racer_cmd = '~/.cargo/bin/racer'
