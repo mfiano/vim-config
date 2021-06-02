@@ -714,7 +714,7 @@ xnoremap <a-down> :move '>+1<cr>gv-gv
 inoremap <silent> <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <silent> <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 inoremap <silent> <expr><cr> pumvisible() ? compe#confirm() : "\<cr>"
-imap <silent><expr> <tab> pumvisible() ?  "\<c-n>" : CheckBackspace() ? "\<tab>" : compe#complete()
+imap <silent><expr> <tab> pumvisible() ? "\<c-n>" : CheckBackspace() ? "\<tab>" : compe#complete()
 
 " Equalize window sizes
 nnoremap - :wincmd =<cr>
