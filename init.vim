@@ -15,7 +15,6 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " Language parsing
 Plug 'ryanoasis/vim-devicons' " Icons
 Plug 'kyazdani42/nvim-web-devicons' " Icons
 Plug 'glepnir/galaxyline.nvim' " Status line
-Plug 'romgrk/barbar.nvim' " Tab bar
 Plug 'kyazdani42/nvim-tree.lua' " File browser
 Plug 'joshdick/onedark.vim' " Color theme
 Plug 'lewis6991/gitsigns.nvim' " Show git change indicators in the sign column
@@ -395,14 +394,6 @@ let g:ale_nim_nimpretty_options = '--maxLineLen:100'
 let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
 let g:ale_rust_rls_config = { 'rust': { 'clippy_preference': 'on' } }
 " }}}
-" barbar {{{
-let bufferline = get(g:, 'bufferline', {})
-let bufferline.auto_hide = v:false
-let bufferline.closable = v:false
-let bufferline.icons = v:true
-let bufferline.maximum_padding = 1
-let bufferline.tabpages = v:true
-" }}}
 " galaxyline {{{
 lua require('plugin.galaxyline')
 " }}}
@@ -653,6 +644,8 @@ let g:which_key_map.w['|'] = 'split vertical'
 let g:which_key_map.w['='] = 'rebalance'
 let g:which_key_map.w.d = 'delete'
 let g:which_key_map.w.s = 'swap'
+let g:which_key_map.w.t = 'open tab'
+let g:which_key_map.w.T = 'close tab'
 call which_key#register('<space>', "g:which_key_map")
 
 augroup which_key
@@ -692,17 +685,19 @@ nnoremap Q :q<cr>
 nnoremap Y y$
 
 " Buffer bar management
-nnoremap <a-[> :BufferPrevious<cr>
-nnoremap <a-]> :BufferNext<cr>
-nnoremap <a-1> :BufferGoto 1<cr>
-nnoremap <a-2> :BufferGoto 2<cr>
-nnoremap <a-3> :BufferGoto 3<cr>
-nnoremap <a-4> :BufferGoto 4<cr>
-nnoremap <a-5> :BufferGoto 5<cr>
-nnoremap <a-6> :BufferGoto 6<cr>
-nnoremap <a-7> :BufferGoto 7<cr>
-nnoremap <a-8> :BufferGoto 8<cr>
-nnoremap <a-9> :BufferGoto 9<cr>
+nnoremap <a-[> :tabprevious<cr>
+nnoremap <a-]> :tabnext<cr>
+nnoremap <a-t> :tabnew<cr>
+nnoremap <a-x> :tabclose<cr>
+nnoremap <a-1> 1gt
+nnoremap <a-2> 2gt
+nnoremap <a-3> 3gt
+nnoremap <a-4> 4gt
+nnoremap <a-5> 5gt
+nnoremap <a-6> 6gt
+nnoremap <a-7> 7gt
+nnoremap <a-8> 8gt
+nnoremap <a-9> 9gt
 
 " Insert a new line when pressing Return in normal mode
 nnoremap <cr> o<esc>
