@@ -189,6 +189,7 @@ augroup ft_commonlisp " {{{
         \ :call vlime#plugin#Compile(vlime#ui#CurTopExpr(v:true))<cr>
   au filetype lisp nnoremap <silent> <buffer> <localleader>cl
         \ :call vlime#plugin#LoadFile(expand("%:p"))<cr>
+  au filetype lisp nnoremap <silent> <buffer> <localleader>es :call EditRootFile("scratch.lisp")<cr>
   au filetype lisp nnoremap <silent> <buffer> <localleader>h<
         \ :call vlime#plugin#XRefSymbol("CALLS", vlime#ui#CurAtom())<cr>
   au filetype lisp nnoremap <silent> <buffer> <localleader>h>
@@ -375,6 +376,17 @@ nmap <silent><buffer> <localleader>lt <plug>(sexp_swap_element_backward)
 nmap <silent><buffer> <localleader>lT <plug>(sexp_swap_list_backward)
 nmap <silent><buffer> <localleader>lw <plug>(sexp_round_head_wrap_element)
 nmap <silent><buffer> <localleader>lW <plug>(sexp_splice_list)
+endfun " }}}
+fun! GitFindRoot() " {{{
+  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
+endfun " }}}
+fun! EditRootFile(file) " {{{
+  let git_root = GitFindRoot()
+  if git_root[0] == "/"
+    execute "edit " . git_root . "/" . a:file
+  else
+    echo "Not a Git repo."
+  endif
 endfun " }}}
 
 " Plugin settings
