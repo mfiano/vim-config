@@ -65,6 +65,7 @@ Plug 'voldikss/vim-floaterm' " Interact with floating windows
 Plug 'ojroques/vim-oscyank' " Allow copying text to the local system clipboard across SSH
 Plug 'mhinz/vim-startify' " Start screen
 Plug 'guns/vim-sexp' " Manage s-expressions
+Plug 'bhurlow/vim-parinfer' " Manage s-expressions
 Plug 'vlime/vlime' " Lisp IDE
 call plug#end()
 " }}}
