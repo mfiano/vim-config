@@ -215,6 +215,7 @@ augroup ft_commonlisp " {{{
   au filetype vlime_repl nnoremap <buffer> <cr> :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
   au filetype vlime_repl nnoremap <buffer> <2-leftmouse>
         \ :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
+  au filetype vlime_repl nnoremap <buffer> i :call vlime#plugin#SendToREPL()<cr>
   au filetype vlime_sldb setlocal nowrap
   au filetype vlime_sldb nnoremap <buffer> <cr> :call vlime#ui#sldb#ChooseCurRestart()<cr>
   au filetype vlime_sldb nnoremap <buffer> a :call b:vlime_conn.SLDBAbort()<cr>
