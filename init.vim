@@ -64,6 +64,7 @@ Plug 'voldikss/vim-floaterm' " Interact with floating windows
 Plug 'ojroques/vim-oscyank' " Allow copying text to the local system clipboard across SSH
 Plug 'mhinz/vim-startify' " Start screen
 Plug 'guns/vim-sexp' " Manage s-expressions
+Plug 'vim-scripts/paredit.vim' " Manage s-expressions
 Plug 'bhurlow/vim-parinfer' " Manage s-expressions
 Plug 'vlime/vlime' " Lisp IDE
 call plug#end()
@@ -214,7 +215,8 @@ augroup ft_commonlisp " {{{
   au filetype vlime_repl setlocal nowrap winfixheight
   au filetype vlime_repl nnoremap <buffer> <cr> :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
   au filetype vlime_repl nnoremap <buffer> <2-leftmouse>
-        \ :call vlime#ui#repl#InspectCurREPLPresentation()<cr>
+  au filetype vlime_repl nnoremap <buffer> <localleader>cl
+        \ :call vlime#ui#repl#ClearREPLBuffer()<cr>
   au filetype vlime_repl nnoremap <buffer> i :call vlime#plugin#SendToREPL()<cr>
   au filetype vlime_sldb setlocal nowrap
   au filetype vlime_sldb nnoremap <buffer> <cr> :call vlime#ui#sldb#ChooseCurRestart()<cr>
@@ -368,10 +370,12 @@ xmap <silent><buffer> ) <plug>(sexp_move_to_next_bracket)
 omap <silent><buffer> ) <plug>(sexp_move_to_next_bracket)
 nmap <silent><buffer> <localleader>lb <plug>(sexp_emit_tail_element)
 nmap <silent><buffer> <localleader>lB <plug>(sexp_emit_head_element)
+nmap <silent><buffer> <localleader>lc <plug>(sexp_convolute)
+nmap <silent><buffer> <localleader>le d[(:call PareditSplice()<cr>
 nmap <silent><buffer> <localleader>lr <plug>(sexp_raise_list)
-nmap <silent><buffer> <localleader>lt <plug>(sexp_swap_element_backward)
 nmap <silent><buffer> <localleader>ls <plug>(sexp_capture_next_element)
 nmap <silent><buffer> <localleader>lS <plug>(sexp_capture_prev_element)
+nmap <silent><buffer> <localleader>lt <plug>(sexp_swap_element_backward)
 nmap <silent><buffer> <localleader>lT <plug>(sexp_swap_list_backward)
 nmap <silent><buffer> <localleader>lw <plug>(sexp_round_head_wrap_element)
 nmap <silent><buffer> <localleader>lW <plug>(sexp_splice_list)
@@ -467,6 +471,14 @@ let g:nvim_tree_show_icons = {
 " }}}
 " nvim-treesitter {{{
 lua require('plugin.nvim-treesitter')
+" }}}
+" paredit {{{
+let g:paredit_disable_clojure = 1
+let g:paredit_disable_lisp = 1
+let g:paredit_disable_scheme = 1
+let g:paredit_electric_return = 1
+let g:paredit_leader = ','
+let g:paredit_mode = 0
 " }}}
 " quick-scope {{{
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
