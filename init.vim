@@ -67,6 +67,7 @@ Plug 'guns/vim-sexp' " Manage s-expressions
 Plug 'vim-scripts/paredit.vim' " Manage s-expressions
 Plug 'bhurlow/vim-parinfer' " Manage s-expressions
 Plug 'vlime/vlime' " Lisp IDE
+Plug 't9md/vim-choosewin'
 call plug#end()
 " }}}
 
@@ -821,5 +822,5 @@ nnoremap <leader>w- :split<cr>
 nnoremap <leader>w\| :vsplit<cr>
 nnoremap <leader>w= <c-w>=
 nnoremap <leader>wd :close<cr>
-nnoremap <leader>ws <c-w>R
+nmap <leader>ws <plug>(choosewin)
 " }}}
