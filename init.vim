@@ -359,6 +359,10 @@ fun! SmartHome() " {{{
   return &wrap && wincol() > 1 ? 'g^' : '^'
 endfun " }}}
 fun! SexpMappings() " {{{
+xmap <silent><buffer> ab <plug>(sexp_outer_list)
+omap <silent><buffer> ab <plug>(sexp_outer_list)
+xmap <silent><buffer> ib <plug>(sexp_inner_list)
+omap <silent><buffer> ib <plug>(sexp_inner_list)
 imap <silent><buffer> ( <plug>(sexp_insert_opening_round)
 imap <silent><buffer> ) <plug>(sexp_insert_closing_round)
 imap <silent><buffer> " <plug>(sexp_insert_double_quote)
